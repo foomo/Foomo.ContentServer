@@ -34,6 +34,12 @@ class SiteContent
 	 */
 	public $status;
 	/**
+	 * resolved part of URI
+	 *
+	 * @var string
+	 */
+	public $URI;
+	/**
 	 * @var string
 	 */
 	public $region;

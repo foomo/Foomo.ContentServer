@@ -25,6 +25,9 @@ namespace Foomo\ContentServer\Vo\Requests;
  */
 class Content
 {
+	/**
+	 * @var string
+	 */
 	public $URI;
 	/**
 	 * @var Content\Node[]
@@ -60,7 +63,7 @@ class Content
 	 * @param string $id
 	 * @param string[] array $mimeTypes
 	 * @param bool $expand
-	 * @return $this
+	 * @return Content
 	 */
 	public function addNode($name, $id, array $mimeTypes, $expand)
 	{

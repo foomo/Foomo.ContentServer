@@ -17,41 +17,24 @@
  * the foomo Opensource Framework. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Foomo\ContentServer;
-use Foomo\Config\AbstractConfig;
+namespace Foomo\ContentServer\Vo\Requests;
 
 /**
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class DomainConfig extends AbstractConfig
+class URI
 {
-	const NAME = 'Foomo.ContentServer.config';
-	private $proxy;
 	/**
-	 * where to get my content from
-	 *
 	 * @var string
 	 */
-	public $server = "http://192.168.56.1:8080";
+	public $id;
 	/**
-	 * @return ProxyInterface
+	 * @var string
 	 */
-	public function getProxy()
-	{
-		if(is_null($this->proxy)) {
-			switch($scheme = parse_url($this->server, PHP_URL_SCHEME)) {
-				case 'http':
-				case 'https':
-					$this->proxy = new HttpProxy($this);
-					break;
-				case 'tcp':
-					$this->proxy = new TcpProxy($this);
-					break;
-				default:
-					trigger_error('unsupported scheme - can not get a proxy for ' . $scheme, E_USER_ERROR);
-			}
-		}
-		return $this->proxy;
-	}
+	public $region;
+	/**
+	 * @var string
+	 */
+	public $language;
 }

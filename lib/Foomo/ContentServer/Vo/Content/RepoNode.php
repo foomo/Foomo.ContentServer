@@ -58,6 +58,10 @@ class RepoNode
 	 */
 	public $hidden;
 	/**
+	 * @var string[]
+	 */
+	public $index;
+	/**
 	 * @var RepoNode[]
 	 */
 	public $nodes;
@@ -80,8 +84,10 @@ class RepoNode
 	{
 		if(!is_array($this->nodes)) {
 			$this->nodes = array();
+			$this->index = array();
 		}
 		$this->nodes[$node->id] = $node;
+		$this->index[] = $node->id;
 	}
 	public function addRegion($region) {
 		if(is_null($this->regions)) {
@@ -99,10 +105,10 @@ class RepoNode
 	}
 	private function addToRegionLanguageProp($prop, $region, $language, $value)
 	{
-		if(!is_array($this->{$prop})) {
+		if(!isset($this->{$prop})) {
 			$this->{$prop} = array();
 		}
-		if(!is_array($this->{$prop}[$region])) {
+		if(!isset($this->{$prop}[$region])) {
 			$this->{$prop}[$region] = array();
 		}
 		$this->{$prop}[$region][$language] = $value;

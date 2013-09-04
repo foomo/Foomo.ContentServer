@@ -18,42 +18,45 @@
  */
 
 namespace Foomo\ContentServer;
+use Foomo\ContentServer\ProxyInterface;
+use Foomo\ContentServer\Vo\Content\SiteContent;
+use Foomo\SimpleData\VoMapper;
+use Foomo\Timer;
+use Foomo\ContentServer\Vo;
 
 /**
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class Client
+class HttpProxy extends AbstractProxy
 {
-	private $server;
-	public function __construct($server)
+	/**
+	 * @var HttpProxy\Client
+	 */
+	private $client;
+	public function __construct(DomainConfig $config)
 	{
-		$this->server = $server;
+		$this->client = new HttpProxy\Client($config->server);
 	}
-	public function get($uri)
+	/**
+	 * get content
+	 *
+	 * @param Vo\Requests\Content $contentRequest
+	 *
+	 * @return SiteContent
+	 */
+	public function getContent(Vo\Requests\Content $contentRequest)
 	{
-		return json_decode(file_get_contents($uri));
-	}
-	function post($uri, $data, $username = null, $password = null)
-	{
-		$data = http_build_query(array('request' => json_encode($data)));
-		$opts = array('http' =>
-			array(
-				'method'  => 'POST',
-				'header'  => 'Content-type: application/x-www-form-urlencoded',
-				'content' => $data
-			)
+		Timer::start(__METHOD__);
+		$ret = $this->mapResponse(
+			$this->client->post('/content', $contentRequest),
+			__NAMESPACE__ . '\\Vo\\Content\\SiteContent'
 		);
-		if($username && $password) {
-			$opts['http']['header'] = ("Authorization: Basic " . base64_encode("$username:$password"));
-		}
-		$context = stream_context_create($opts);
-		// error handling
-		$json = file_get_contents($this->getUrl($uri), false, $context);
-		return json_decode($json);
+		Timer::stop(__METHOD__);
+		return $ret;
 	}
-	private function getUrl($uri)
+	public function getURI($region, $language, $id)
 	{
-		return $this->server .= $uri;
+		return 'bla';
 	}
 }

@@ -18,20 +18,46 @@
  */
 
 namespace Foomo\ContentServer;
+use Foomo\ContentServer\Vo\Content\SiteContent;
+use Foomo\SimpleData\VoMapper;
+use Foomo\Timer;
 
 /**
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class Proxy
+abstract class AbstractProxy
 {
-	private $client;
-	public function __construct(DomainConfig $config)
+	/**
+	 * turn this of for higher performance
+	 * @var bool
+	 */
+	public static $mapData = true;
+	protected function mapResponse($response, $voClass)
 	{
-		$this->client = new Client($config->server);
+		if(self::$mapData) {
+			return VoMapper::map($response, new $voClass);
+		} else {
+			return $response;
+		}
 	}
-	public function getContent(Vo\Requests\Content $contentRequest)
-	{
-		return $this->client->post('/content', $contentRequest);
-	}
+	/**
+	 * get content
+	 *
+	 * @param Vo\Requests\Content $contentRequest
+	 *
+	 * @return SiteContent
+	 */
+	abstract public function getContent(Vo\Requests\Content $contentRequest);
+
+	/**
+	 *
+	 * @param string $region
+	 * @param string $language
+	 * @param string $id
+	 *
+	 * @return string
+	 */
+	abstract public function getURI($region, $language, $id);
+
 }

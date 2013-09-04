@@ -18,40 +18,43 @@
  */
 
 namespace Foomo\ContentServer;
-use Foomo\Config\AbstractConfig;
+use Foomo\ContentServer\Vo\Content\SiteContent;
+use Foomo\SimpleData\VoMapper;
+use Foomo\Timer;
 
 /**
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class DomainConfig extends AbstractConfig
+class TCPProxy extends AbstractProxy
 {
-	const NAME = 'Foomo.ContentServer.config';
-	private $proxy;
 	/**
-	 * where to get my content from
-	 *
-	 * @var string
+	 * @var TCPProxy\Client
 	 */
-	public $server = "http://192.168.56.1:8080";
-	/**
-	 * @return ProxyInterface
-	 */
-	public function getProxy()
+	private $client;
+	public function __construct(DomainConfig $config)
 	{
-		if(is_null($this->proxy)) {
-			switch($scheme = parse_url($this->server, PHP_URL_SCHEME)) {
-				case 'http':
-				case 'https':
-					$this->proxy = new HttpProxy($this);
-					break;
-				case 'tcp':
-					$this->proxy = new TcpProxy($this);
-					break;
-				default:
-					trigger_error('unsupported scheme - can not get a proxy for ' . $scheme, E_USER_ERROR);
-			}
-		}
-		return $this->proxy;
+		$this->client = new TCPProxy\Client($config->server);
+	}
+
+	/**
+	 * get content
+	 *
+	 * @param Vo\Requests\Content $contentRequest
+	 *
+	 * @return SiteContent
+	 */
+	public function getContent(Vo\Requests\Content $contentRequest)
+	{
+		return $this->mapResponse($this->client->call('content', $contentRequest)->reply, new SiteContent());
+	}
+
+	public function getURI($region, $language, $id)
+	{
+		$request = new Vo\Requests\URI;
+		$request->id = $id;
+		$request->region = $region;
+		$request->language = $language;
+		return $this->client->call('getURI', $request)->reply;
 	}
 }
