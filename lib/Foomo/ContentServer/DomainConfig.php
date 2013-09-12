@@ -33,7 +33,7 @@ class DomainConfig extends AbstractConfig
 	 *
 	 * @var string
 	 */
-	public $server = "http://192.168.56.1:8080";
+	public $server = "tcp://127.0.0.1:8081";
 	/**
 	 * @return ProxyInterface
 	 */

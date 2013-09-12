@@ -44,7 +44,7 @@ class Client
 		}
 		$result = socket_connect($this->socket, $address, $urlParts['port']);
 		if ($result === false) {
-			trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($socket)), E_USER_ERROR);
+			trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
 		}
 	}
 	public function __destroy()
