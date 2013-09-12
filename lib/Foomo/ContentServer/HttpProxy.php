@@ -55,7 +55,7 @@ class HttpProxy extends AbstractProxy
 		Timer::stop(__METHOD__);
 		return $ret;
 	}
-	public function getURI($region, $language, $id)
+	public function getURIs($region, $language, $ids)
 	{
 		return 'bla';
 	}

@@ -54,6 +54,7 @@ class Client
 				if(!$tryedToStartServer) {
 					trigger_error('failed to connect socket trying to start server: ' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
 					ServerManager::startServer($config);
+					$tryedToStartServer = true;
 				} else {
 					trigger_error('failed to connect socket number of attempts: ' . $attempts . ', socket error:' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
 				}

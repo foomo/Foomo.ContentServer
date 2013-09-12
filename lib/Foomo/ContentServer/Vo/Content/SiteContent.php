@@ -48,6 +48,10 @@ class SiteContent
 	 */
 	public $language;
 	/**
+	 * @var string
+	 */
+	public $handler;
+	/**
 	 * @var Item
 	 */
 	public $item;
