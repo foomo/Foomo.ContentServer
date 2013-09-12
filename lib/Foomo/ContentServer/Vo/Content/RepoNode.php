@@ -54,6 +54,10 @@ class RepoNode
 	 */
 	public $URIs;
 	/**
+	 * @var array
+	 */
+	public $destinationIds;
+	/**
 	 * @var bool
 	 */
 	public $hidden;
@@ -98,6 +102,10 @@ class RepoNode
 	public function addURI($region, $language, $URI)
 	{
 		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
+	}
+	public function addDestinationId($region, $language, $destinationId)
+	{
+		$this->addToRegionLanguageProp('destinationIds', $region, $language, $destinationId);
 	}
 	public function addLinkId($region, $language, $linkId)
 	{
