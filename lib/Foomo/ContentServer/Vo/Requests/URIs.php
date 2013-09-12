@@ -23,12 +23,12 @@ namespace Foomo\ContentServer\Vo\Requests;
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class URI
+class URIs
 {
 	/**
-	 * @var string
+	 * @var string[]
 	 */
-	public $id;
+	public $ids;
 	/**
 	 * @var string
 	 */

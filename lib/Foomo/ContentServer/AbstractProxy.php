@@ -54,10 +54,10 @@ abstract class AbstractProxy
 	 *
 	 * @param string $region
 	 * @param string $language
-	 * @param string $id
+	 * @param string[] $ids
 	 *
-	 * @return string
+	 * @return string[]
 	 */
-	abstract public function getURI($region, $language, $id);
+	abstract public function getURIs($region, $language, $ids);
 
 }

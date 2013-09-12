@@ -24,17 +24,52 @@ use Foomo\SimpleData\VoMapper;
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class Node
+class Node implements \Iterator
 {
 	/**
 	 * @var Item
 	 */
 	public $item;
+
 	/**
 	 * @var Node[]
 	 */
 	public $nodes = array();
+
+	/**
+	 * @internal
+	 * @var string[]
+	 */
+	public $index = array();
+
+	private $cursor = 0;
+
 	public function addToNodes($key, $value) {
 		$this->nodes[$key] = VoMapper::map($value, new Node);
+	}
+
+    public function current()
+	{
+		return $this->nodes[$this->key()];
+	}
+
+    public function next()
+	{
+		$this->cursor ++;
+	}
+
+    public function key()
+	{
+		return $this->index[$this->cursor];
+	}
+
+    public function valid()
+	{
+		return count($this->index) > $this->cursor;
+	}
+
+    public function rewind()
+	{
+		$this->cursor = 0;
 	}
 }

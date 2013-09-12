@@ -49,12 +49,12 @@ class TCPProxy extends AbstractProxy
 		return $this->mapResponse($this->client->call('content', $contentRequest)->reply, new SiteContent());
 	}
 
-	public function getURI($region, $language, $id)
+	public function getURIs($region, $language, $ids)
 	{
-		$request = new Vo\Requests\URI;
-		$request->id = $id;
+		$request = new Vo\Requests\URIs();
+		$request->ids = $ids;
 		$request->region = $region;
 		$request->language = $language;
-		return $this->client->call('getURI', $request)->reply;
+		return $this->client->call('getURIs', $request)->reply;
 	}
 }
