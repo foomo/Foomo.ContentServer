@@ -47,6 +47,12 @@ class DomainConfig extends AbstractConfig
 	 */
 	public $name = "default";
 	/**
+	 * one of error, record, warning, notice, debug
+	 *
+	 * @var string
+	 */
+	public $logLevel = "record";
+	/**
 	 * @return ProxyInterface
 	 */
 	public function getProxy()
@@ -69,7 +75,7 @@ class DomainConfig extends AbstractConfig
 	public function getServerCommand()
 	{
 		$urlParts = parse_url($this->server);
-		return Module::getBaseDir('bin') . DIRECTORY_SEPARATOR . 'content-server-linux-amd64 -address=' . escapeshellarg($urlParts['host'] . ':' . $urlParts['port'] . ' -protocol=' . escapeshellarg($urlParts['scheme']) );
+		return Module::getBaseDir('bin') . DIRECTORY_SEPARATOR . 'content-server-linux-amd64 -address=' . addslashes($urlParts['host'] . ':' . $urlParts['port'] . ' -protocol=' . addslashes($urlParts['scheme']) . ' -logLevel=' . addslashes($this->logLevel) . ' ' . addslashes($this->repo) );
 	}
 	public function getLogfile()
 	{

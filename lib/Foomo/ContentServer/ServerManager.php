@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer;
+use Foomo\CliCall;
 
 /**
  * @link www.foomo.org
@@ -25,23 +26,37 @@ namespace Foomo\ContentServer;
  */
 class ServerManager
 {
-	private $pid;
-
 	public static function startServer(DomainConfig $config)
 	{
-		// http://braincrafted.com/php-background-processes/
-		file_put_content(
+		file_put_contents(
 			self::getPidFile($config),
-			shell_exec(sprintf(
+			$pid = trim(shell_exec($cmd = sprintf(
 				'%s > %s 2>&1 & echo $!',
 				$config->getServerCommand(),
 				$config->getLogfile()
-			))
+			)))
 		);
+		if(!self::serverIsRunning($config)) {
+			trigger_error('could not start server with this config ' . var_export($config, true), E_USER_ERROR);
+		}
 	}
-	public static function serverIsRunning($config)
+	public static function kill(DomainConfig $config)
 	{
-		return false;
+		if(self::serverIsRunning($config)) {
+			$call = CliCall::create('kill', array(self::getPid($config)));
+			$call->execute();
+		}
+	}
+	public static function serverIsRunning(DomainConfig $config)
+	{
+		$pid = self::getPid($config);
+		if($pid) {
+			$call = CliCall::create('ps', array('--no-headers', '-o%p', '-p', $pid));
+			$call->execute();
+			return $call->exitStatus == 0 && trim($call->stdOut) == $pid;
+		} else {
+			return false;
+		}
 		// http://stackoverflow.com/questions/11532188/how-to-get-rid-of-the-headers-in-a-ps-command-in-mac-os-x
 		// ps -p 111 -o %p | sed 1d
 		// http://stackoverflow.com/questions/3043978/bash-how-to-check-if-a-process-id-pid-exists
@@ -55,18 +70,21 @@ class ServerManager
 			frederik@renelezard-dev:~/.ssh$ ps -p 19771
   			PID TTY          TIME CMD
 			19771 ?        00:00:00 apache2
-			try {
-				$result = shell_exec(sprintf('ps %d', $this->pid));
-				if(count(preg_split("/\n/", $result)) > 2) {
-					return true;
-				}
-			} catch(Exception $e) {}
 		*/
 
 	}
+	public static function getPid(DomainConfig $config)
+	{
+		$pidFile = self::getPidFile($config);
+		$pid = null;
+		if(file_exists($pidFile)) {
+			$pid = trim(file_get_contents(self::getPidFile($config)));
+		}
+		return !empty($pid)?$pid:null;
+	}
 	public static function getPidFile(DomainConfig $config)
 	{
-		return Module::getTempDir() . DIRECTORY_SEPARATOR . $config->getId();
+		return Module::getTempDir() . DIRECTORY_SEPARATOR . $config->getName();
 	}
 
 }

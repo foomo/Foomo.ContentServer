@@ -75,4 +75,19 @@ class Module extends \Foomo\Modules\ModuleBase
 			// \Foomo\Modules\Resource\Config::getResource('yourModule', 'db')
 		);
 	}
+	public static function hookPostConfigUpdate($oldConfig, $newConfig, $module, $domain)
+	{
+
+		if($oldConfig && $oldConfig->getName() == DomainConfig::NAME) {
+			var_dump($oldConfig);
+			if(ServerManager::serverIsRunning($oldConfig)) {
+				var_dump('kill');
+				ServerManager::kill($oldConfig);
+			} else {
+				var_dump('no kill');
+			}
+		}
+	}
+
+
 }

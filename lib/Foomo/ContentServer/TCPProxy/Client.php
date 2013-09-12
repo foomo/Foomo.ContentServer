@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer\TCPProxy;
+use Foomo\ContentServer\ServerManager;
 
 /**
  * @link www.foomo.org
@@ -27,7 +28,7 @@ class Client
 {
 	private $server;
 	private $socket;
-	const MAX_CONNECTION_ATTEMPTS = 3;
+	const MAX_CONNECTION_ATTEMPTS = 1;
 	public function __construct($config)
 	{
 		$this->server = $config->server;
@@ -55,8 +56,8 @@ class Client
 					trigger_error('failed to connect socket trying to start server: ' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
 					ServerManager::startServer($config);
 					$tryedToStartServer = true;
-				} else {
-					trigger_error('failed to connect socket number of attempts: ' . $attempts . ', socket error:' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
+				//} else {
+				//	trigger_error('failed to connect socket number of attempts: ' . $attempts . ', socket error:' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
 				}
 				sleep(1);
 			}
