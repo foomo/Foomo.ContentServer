@@ -29,11 +29,23 @@ class DomainConfig extends AbstractConfig
 	const NAME = 'Foomo.ContentServer.config';
 	private $proxy;
 	/**
-	 * where to get my content from
+	 * where to get my content from / where to spawn a server
 	 *
 	 * @var string
 	 */
-	public $server = "http://192.168.56.1:8080";
+	public $server = "tcp://127.0.0.1:8081";
+	/**
+	 * this is where your repo json comes from
+	 *
+	 * @var string
+	 */
+	public $repo = "http://test.bestbytes/foomo/modules/Foomo.Page.Content/services/content.php";
+	/**
+	 * name for the server
+	 *
+	 * @var string
+	 */
+	public $name = "default";
 	/**
 	 * @return ProxyInterface
 	 */
@@ -53,5 +65,14 @@ class DomainConfig extends AbstractConfig
 			}
 		}
 		return $this->proxy;
+	}
+	public function getServerCommand()
+	{
+		$urlParts = parse_url($this->server);
+		return Module::getBaseDir('bin') . DIRECTORY_SEPARATOR . 'content-server-linux-amd64 -address=' . escapeshellarg($urlParts['host'] . ':' . $urlParts['port'] . ' -protocol=' . escapeshellarg($urlParts['scheme']) );
+	}
+	public function getLogfile()
+	{
+		return Module::getLogDir() . DIRECTORY_SEPARATOR . 'content-server-' . $this->name;
 	}
 }

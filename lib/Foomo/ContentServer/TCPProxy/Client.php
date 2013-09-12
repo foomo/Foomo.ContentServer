@@ -27,24 +27,39 @@ class Client
 {
 	private $server;
 	private $socket;
-	public function __construct($server)
+	const MAX_CONNECTION_ATTEMPTS = 3;
+	public function __construct($config)
 	{
-		$this->server = $server;
+		$this->server = $config->server;
 		$urlParts = parse_url($this->server);
 		if(!isset($urlParts['port'])) {
 			trigger_error('you have to specify a port, because there is no std port for me', E_USER_ERROR);
 		}
 		if(!isset($urlParts['host'])) {
-			trigger_error('i am missing a host to connect to in :' . $server, E_USER_ERROR);
+			trigger_error('i am missing a host to connect to in :' . $this->server, E_USER_ERROR);
 		}
 		$address = gethostbyname($urlParts['host']);
 		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if ($this->socket === false) {
 			trigger_error('failed to create socket: ' . socket_strerror(socket_last_error()), E_USER_ERROR);
 		}
-		$result = socket_connect($this->socket, $address, $urlParts['port']);
-		if ($result === false) {
-			trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($socket)), E_USER_ERROR);
+		$connected = false;
+		$tryedToStartServer = false;
+		$attempts = 0;
+		while($connected === false) {
+			$connected = socket_connect($this->socket, $address, $urlParts['port']);
+			if ($attempts > self::MAX_CONNECTION_ATTEMPTS) {
+				trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
+			} else if($connected === false) {
+				if(!$tryedToStartServer) {
+					trigger_error('failed to connect socket trying to start server: ' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
+					ServerManager::startServer($config);
+				} else {
+					trigger_error('failed to connect socket number of attempts: ' . $attempts . ', socket error:' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
+				}
+				sleep(1);
+			}
+			$attempts ++;
 		}
 	}
 	public function __destroy()

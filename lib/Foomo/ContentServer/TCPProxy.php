@@ -34,7 +34,7 @@ class TCPProxy extends AbstractProxy
 	private $client;
 	public function __construct(DomainConfig $config)
 	{
-		$this->client = new TCPProxy\Client($config->server);
+		$this->client = new TCPProxy\Client($config);
 	}
 
 	/**
