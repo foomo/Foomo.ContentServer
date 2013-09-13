@@ -19,6 +19,8 @@
 
 namespace Foomo\ContentServer\TCPProxy;
 use Foomo\ContentServer\ServerManager;
+use Foomo\Lock;
+use Foomo\ContentServer\DomainConfig;
 
 /**
  * @link www.foomo.org
@@ -29,7 +31,7 @@ class Client
 	private $server;
 	private $socket;
 	const MAX_CONNECTION_ATTEMPTS = 1;
-	public function __construct($config)
+	public function __construct(DomainConfig $config)
 	{
 		$this->server = $config->server;
 		$urlParts = parse_url($this->server);
@@ -45,21 +47,26 @@ class Client
 			trigger_error('failed to create socket: ' . socket_strerror(socket_last_error()), E_USER_ERROR);
 		}
 		$connected = false;
-		$tryedToStartServer = false;
+		$triedToStartServer = false;
 		$attempts = 0;
 		while($connected === false) {
 			$connected = socket_connect($this->socket, $address, $urlParts['port']);
 			if ($attempts > self::MAX_CONNECTION_ATTEMPTS) {
 				trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
 			} else if($connected === false) {
-				if(!$tryedToStartServer) {
+				if(!$triedToStartServer) {
 					trigger_error('failed to connect socket trying to start server: ' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
-					ServerManager::startServer($config);
-					$tryedToStartServer = true;
-				//} else {
-				//	trigger_error('failed to connect socket number of attempts: ' . $attempts . ', socket error:' . socket_strerror(socket_last_error($this->socket)), E_USER_WARNING);
+					$lockName = 'start-content-server-tcp_' . $config->getName();
+					if(Lock::lock($lockName, false)) {
+						// lets start that baby
+						ServerManager::startServer($config);
+						Lock::release($lockName);
+						$triedToStartServer = true;
+					} else {
+						// well sbdy else is trying this already
+						sleep(1);
+					}
 				}
-				sleep(1);
 			}
 			$attempts ++;
 		}
