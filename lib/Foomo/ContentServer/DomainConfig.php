@@ -64,7 +64,7 @@ class DomainConfig extends AbstractConfig
 					$this->proxy = new HttpProxy($this);
 					break;
 				case 'tcp':
-					$this->proxy = new TcpProxy($this);
+					$this->proxy = new TCPProxy($this);
 					break;
 				default:
 					trigger_error('unsupported scheme - can not get a proxy for ' . $scheme, E_USER_ERROR);
