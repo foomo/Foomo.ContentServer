@@ -77,7 +77,7 @@ class Module extends \Foomo\Modules\ModuleBase
 	}
 	public static function hookPostConfigUpdate($oldConfig, $newConfig, $module, $domain)
 	{
-		if($oldConfig && $oldConfig->getName() == DomainConfig::NAME) {
+		if($oldConfig && $oldConfig->getName() == 'Foomo.ContentServer.config') {
 			if(ServerManager::serverIsRunning($oldConfig)) {
 				ServerManager::kill($oldConfig);
 			}
