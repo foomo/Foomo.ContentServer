@@ -17,63 +17,48 @@
  * the foomo Opensource Framework. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Foomo\ContentServer\Vo\Content;
-use Foomo\SimpleData\VoMapper;
+namespace Foomo\ContentServer\Vo\Requests;
+use Foomo\ContentServer\Vo\Requests\Content\Env;
 
 /**
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class Node implements \Iterator, \Countable
+class Nodes
 {
 	/**
-	 * @var Item
-	 */
-	public $item;
-
-	/**
-	 * @var Node[]
+	 * @var Content\Node[]
 	 */
 	public $nodes = array();
+	/**
+	 * @var Content\Env
+	 */
+	public $env;
 
 	/**
-	 * @internal
-	 * @var string[]
+	 * @param Env $env
+	 *
+	 * @return Content
 	 */
-	public $index = array();
-
-	private $cursor = 0;
-
-	public function addToNodes($key, $value) {
-		$this->nodes[$key] = VoMapper::map($value, new Node);
+	public static function create(Env $env)
+	{
+		return new self($env);
+	}
+	private function __construct($env)
+	{
+		$this->env = $env;
 	}
 
-    public function current()
+	/**
+	 * @param string $name
+	 * @param string $id
+	 * @param string[] array $mimeTypes
+	 * @param bool $expand
+	 * @return Content
+	 */
+	public function addNode($name, $id, array $mimeTypes, $expand)
 	{
-		return $this->nodes[$this->key()];
-	}
-
-    public function next()
-	{
-		$this->cursor ++;
-	}
-
-    public function key()
-	{
-		return $this->index[$this->cursor];
-	}
-
-    public function valid()
-	{
-		return count($this->index) > $this->cursor;
-	}
-
-    public function rewind()
-	{
-		$this->cursor = 0;
-	}
-	public function count()
-	{
-		return count($this->index);
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
+		return $this;
 	}
 }

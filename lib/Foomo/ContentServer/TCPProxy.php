@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer;
+use Foomo\ContentServer\Vo\Content\Node;
 use Foomo\ContentServer\Vo\Content\SiteContent;
 use Foomo\SimpleData\VoMapper;
 use Foomo\Timer;
@@ -55,6 +56,13 @@ class TCPProxy extends AbstractProxy
 		return $mapped;
 	}
 
+	/**
+	 * @param string    $region
+	 * @param string    $language
+	 * @param \string[] $ids
+	 *
+	 * @return \string[]
+	 */
 	public function getURIs($region, $language, $ids)
 	{
 		$request = new Vo\Requests\URIs();
@@ -62,5 +70,31 @@ class TCPProxy extends AbstractProxy
 		$request->region = $region;
 		$request->language = $language;
 		return $this->client->call('getURIs', $request)->reply;
+	}
+
+	/**
+	 * @param string $id
+	 *
+	 * @return \string[]
+	 */
+	public function getItemMap($id)
+	{
+		$request = new Vo\Requests\ItemMap();
+		$request->id = $id;
+		return $this->client->call('getItemMap', $request)->reply;
+	}
+
+	/**
+	 * @param Vo\Requests\Nodes $nodeRequest
+	 *
+	 * @return Node[] hash
+	 */
+	public function getNodes(Vo\Requests\Nodes $nodeRequest)
+	{
+		$nodes = array();
+		foreach($this->client->call('getNodes', $nodeRequest)->reply as $nodeName => $rawNode) {
+			$nodes[$nodeName] = VoMapper::map($rawNode, new Node());
+		}
+		return $nodes;
 	}
 }

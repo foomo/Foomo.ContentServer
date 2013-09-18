@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer\Vo\Requests\Content;
+use Foomo\ContentServer\Vo\Requests\Content\Env\Defaults;
 
 /**
  * @link www.foomo.org
@@ -26,6 +27,12 @@ namespace Foomo\ContentServer\Vo\Requests\Content;
 class Env
 {
 	/**
+	 * if you can not resolve a content, you need a region / language to fall back to in order to retrieve your nodes
+	 *
+	 * @var Env\Defaults
+	 */
+	public $defaults;
+	/**
 	 * @var string[]
 	 */
 	public $groups;
@@ -33,4 +40,12 @@ class Env
 	 * @var array
 	 */
 	public $data;
+	public static function create(Defaults $defaults, array $groups = array(), array $data = array())
+	{
+		$env = new self();
+		$env->groups = $groups;
+		$env->defaults = $defaults;
+		$env->data = $data;
+		return $env;
+	}
 }

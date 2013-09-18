@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer\Vo\Requests;
+use Foomo\ContentServer\Vo\Requests\Content\Env;
 
 /**
  * @link www.foomo.org
@@ -40,21 +41,17 @@ class Content
 
 	/**
 	 * @param $URI
-	 * @param $groups
-	 * @param array $data
+	 * @param Env $env
 	 *
 	 * @return Content
 	 */
-	public static function create($URI, $groups, $data = array())
+	public static function create($URI, Env $env)
 	{
-		return new self($URI, $groups, $data);
+		return new self($URI, $env);
 	}
-	private function __construct($URI, $groups, $data = array())
+	private function __construct($URI, $env)
 	{
 		$this->URI = $URI;
-		$env = new Content\Env();
-		$env->data = $data;
-		$env->groups = $groups;
 		$this->env = $env;
 	}
 
@@ -67,11 +64,7 @@ class Content
 	 */
 	public function addNode($name, $id, array $mimeTypes, $expand)
 	{
-		$node = new Content\Node;
-		$node->id = $id;
-		$node->mimeTypes = $mimeTypes;
-		$node->expand = $expand;
-		$this->nodes[$name] = $node;
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
 		return $this;
 	}
 }

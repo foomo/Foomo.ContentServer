@@ -17,63 +17,27 @@
  * the foomo Opensource Framework. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Foomo\ContentServer\Vo\Content;
-use Foomo\SimpleData\VoMapper;
+namespace Foomo\ContentServer\Vo\Requests\Content\Env;
 
 /**
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class Node implements \Iterator, \Countable
+class Defaults
 {
 	/**
-	 * @var Item
+	 * @var string
 	 */
-	public $item;
-
+	public $region;
 	/**
-	 * @var Node[]
+	 * @var string
 	 */
-	public $nodes = array();
-
-	/**
-	 * @internal
-	 * @var string[]
-	 */
-	public $index = array();
-
-	private $cursor = 0;
-
-	public function addToNodes($key, $value) {
-		$this->nodes[$key] = VoMapper::map($value, new Node);
-	}
-
-    public function current()
+	public $language;
+	public static function create($region, $language)
 	{
-		return $this->nodes[$this->key()];
-	}
-
-    public function next()
-	{
-		$this->cursor ++;
-	}
-
-    public function key()
-	{
-		return $this->index[$this->cursor];
-	}
-
-    public function valid()
-	{
-		return count($this->index) > $this->cursor;
-	}
-
-    public function rewind()
-	{
-		$this->cursor = 0;
-	}
-	public function count()
-	{
-		return count($this->index);
+		$defaults = new self();
+		$defaults->region = $region;
+		$defaults->language = $language;
+		return $defaults;
 	}
 }

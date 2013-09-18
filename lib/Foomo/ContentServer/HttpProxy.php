@@ -57,6 +57,21 @@ class HttpProxy extends AbstractProxy
 	}
 	public function getURIs($region, $language, $ids)
 	{
-		return 'bla';
+		return 'not yet implemented method ' . __METHOD__;
+	}
+
+	public function getItemMap($id)
+	{
+		return 'not yet implemented method ' . __METHOD__;
+	}
+
+	/**
+	 * @param Vo\Requests\Nodes $nodeRequest
+	 *
+	 * @return Node[] hash
+	 */
+	public function getNodes(Vo\Requests\Nodes $nodeRequest)
+	{
+		return 'not yet implemented method ' . __METHOD__;
 	}
 }

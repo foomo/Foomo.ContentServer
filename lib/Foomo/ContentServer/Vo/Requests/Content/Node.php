@@ -37,4 +37,10 @@ class Node
 	 * @var bool
 	 */
 	public $expand;
+	public function __construct($id, array $mimeTypes, $expand)
+	{
+		$this->id = $id;
+		$this->mimeTypes = $mimeTypes;
+		$this->expand = $expand;
+	}
 }

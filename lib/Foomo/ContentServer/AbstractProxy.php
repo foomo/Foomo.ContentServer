@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer;
+use Foomo\ContentServer\Vo\Content\Node;
 use Foomo\ContentServer\Vo\Content\SiteContent;
 use Foomo\SimpleData\VoMapper;
 use Foomo\Timer;
@@ -60,4 +61,17 @@ abstract class AbstractProxy
 	 */
 	abstract public function getURIs($region, $language, $ids);
 
+	/**
+	 * @param string $id
+	 *
+	 * @return string[]
+	 */
+	abstract public function getItemMap($id);
+
+	/**
+	 * @param Vo\Requests\Nodes $nodeRequest
+	 *
+	 * @return Node[] hash
+	 */
+	abstract public function getNodes(Vo\Requests\Nodes $nodeRequest);
 }
