@@ -100,7 +100,9 @@ class RepoNode implements \Iterator, \Countable
 		if(is_null($this->regions)) {
 			$this->regions = array();
 		}
-		$this->regions[] = $region;
+		if(!in_array($region, $this->regions)) {
+			$this->regions[] = $region;
+		}
 	}
 	public function addURI($region, $language, $URI)
 	{
