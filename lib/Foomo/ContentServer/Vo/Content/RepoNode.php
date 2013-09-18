@@ -23,7 +23,7 @@ namespace Foomo\ContentServer\Vo\Content;
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class RepoNode
+class RepoNode implements \Iterator, \Countable
 {
 	/**
 	 * @var string
@@ -77,6 +77,9 @@ class RepoNode
 	 * @var string[]
 	 */
 	public $linkIds;
+
+	private $cursor = 0;
+
 	public function addGroup($group)
 	{
 		if(!is_array($this->groups)) {
@@ -125,5 +128,38 @@ class RepoNode
 	public function addName($language, $name)
 	{
 		$this->names[$language] = $name;
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	// ~ Iterator and Countable implementation
+	//------------------------------------------------------------------------------------------------------------------
+
+    public function current()
+	{
+		return $this->nodes[$this->key()];
+	}
+
+    public function next()
+	{
+		$this->cursor ++;
+	}
+
+    public function key()
+	{
+		return $this->index[$this->cursor];
+	}
+
+    public function valid()
+	{
+		return count($this->index) > $this->cursor;
+	}
+
+    public function rewind()
+	{
+		$this->cursor = 0;
+	}
+	public function count()
+	{
+		return count($this->index);
 	}
 }
