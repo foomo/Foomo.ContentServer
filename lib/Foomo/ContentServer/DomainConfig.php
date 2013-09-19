@@ -53,18 +53,14 @@ class DomainConfig extends AbstractConfig
 	 */
 	public $logLevel = "record";
 	/**
-	 * @return ProxyInterface
+	 * @return Proxy
 	 */
 	public function getProxy()
 	{
 		if(is_null($this->proxy)) {
 			switch($scheme = parse_url($this->server, PHP_URL_SCHEME)) {
-				case 'http':
-				case 'https':
-					$this->proxy = new HttpProxy($this);
-					break;
 				case 'tcp':
-					$this->proxy = new TCPProxy($this);
+					$this->proxy = new Proxy($this);
 					break;
 				default:
 					trigger_error('unsupported scheme - can not get a proxy for ' . $scheme, E_USER_ERROR);
