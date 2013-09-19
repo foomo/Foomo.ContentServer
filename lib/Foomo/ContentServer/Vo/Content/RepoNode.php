@@ -34,7 +34,7 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $regions;
 	/**
-	 * @var hash
+	 * @var string[] hashmap
 	 */
 	public $names = array();
 	/**
@@ -50,11 +50,11 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $mimeType;
 	/**
-	 * @var array
+	 * @var string[] hashmap
 	 */
 	public $URIs;
 	/**
-	 * @var array
+	 * @var string[]
 	 */
 	public $destinationIds;
 	/**
@@ -89,12 +89,15 @@ class RepoNode implements \Iterator, \Countable
 	}
 	public function addNode(RepoNode $node)
 	{
+
 		if(!is_array($this->nodes)) {
 			$this->nodes = array();
 			$this->index = array();
 		}
-		$this->nodes[$node->id] = $node;
-		$this->index[] = $node->id;
+		if(!in_array($node->id, $this->index)) {
+			$this->nodes[$node->id] = $node;
+			$this->index[] = $node->id;
+		}
 	}
 	public function addRegion($region) {
 		if(is_null($this->regions)) {
@@ -104,6 +107,34 @@ class RepoNode implements \Iterator, \Countable
 			$this->regions[] = $region;
 		}
 	}
+
+	public function setURIs($objs)
+	{
+		foreach((array)$objs as $region => $languages) {
+			foreach((array)$languages as $language => $value) {
+				$this->addURI($region, $language, $value);
+			}
+		}
+	}
+
+	public function setDestinationIds($objs)
+	{
+		if(!is_null($destinationIds)) {
+			foreach((array)$objs as $region => $languages) {
+				foreach((array)$languages as $language => $value) {
+					$this->addDestinationId($region, $language, $value);
+				}
+			}
+		}
+	}
+
+	public function setNames($objs)
+	{
+		foreach((array)$objs as $language => $value) {
+			$this->addName($language, $value);
+		}
+	}
+
 	public function addURI($region, $language, $URI)
 	{
 		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
