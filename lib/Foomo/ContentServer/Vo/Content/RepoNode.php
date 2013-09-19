@@ -119,7 +119,7 @@ class RepoNode implements \Iterator, \Countable
 
 	public function setDestinationIds($objs)
 	{
-		if(!is_null($destinationIds)) {
+		if(!is_null($objs)) {
 			foreach((array)$objs as $region => $languages) {
 				foreach((array)$languages as $language => $value) {
 					$this->addDestinationId($region, $language, $value);
