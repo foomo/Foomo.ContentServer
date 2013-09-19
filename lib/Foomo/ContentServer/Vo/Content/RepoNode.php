@@ -80,6 +80,20 @@ class RepoNode implements \Iterator, \Countable
 
 	private $cursor = 0;
 
+	public function setData($data)
+	{
+		if(!isset($this->data)) {
+			$this->data = array();
+		}
+		foreach($data as $prop => $value) {
+			if(is_object($this->data)) {
+				$this->data->{$prop} = $value;
+			} else {
+				$this->data[$prop] = $value;
+			}
+		}
+	}
+
 	public function addGroup($group)
 	{
 		if(!is_array($this->groups)) {
