@@ -34,9 +34,15 @@ class Proxy implements ProxyInterface
 	 * @internal get it from your domain config
 	 */
 	private $client;
+	/**
+	 * turn this of for higher performance
+	 * @var bool
+	 */
+	private $mapData = false;
 	public function __construct(DomainConfig $config)
 	{
 		$this->client = new TCPProxy\Client($config);
+		$this->mapData = $config->mapData;
 	}
 
 	/**
@@ -48,13 +54,10 @@ class Proxy implements ProxyInterface
 	 */
 	public function getContent(Vo\Requests\Content $contentRequest)
 	{
-		Timer::start('calling for content');
-		$raw = $this->client->call('content', $contentRequest)->reply;
-		Timer::stop('calling for content');
-		Timer::start('map result');
-		$mapped = $this->mapResponse($raw, new SiteContent());
-		Timer::stop('map result');
-		return $mapped;
+		return $this->mapResponse(
+			$this->client->call('content', $contentRequest)->reply,
+			new SiteContent()
+		);
 	}
 
 	/**
@@ -108,19 +111,17 @@ class Proxy implements ProxyInterface
 	}
 
 
-	/**
-	 * turn this of for higher performance
-	 * @var bool
-	 */
-	public static $mapData = true;
 	protected function mapResponse($response, $voClass)
 	{
-		$response = (array) $response;
+		// $response = (array) $response;
 		if(count($response) == 2 && sort(array_keys($response)) == array('code', 'message')) {
 			throw new \Exception($response['message'], $response['code']);
 		} else {
-			if(self::$mapData) {
-				return VoMapper::map($response, new $voClass);
+			if($this->mapData) {
+				Timer::start(__METHOD__);
+				$mapped = VoMapper::map($response, new $voClass);
+				Timer::stop(__METHOD__);
+				return $mapped;
 			} else {
 				return $response;
 			}

@@ -22,6 +22,7 @@ namespace Foomo\ContentServer\TCPProxy;
 use Foomo\ContentServer\ServerManager;
 use Foomo\Lock;
 use Foomo\ContentServer\DomainConfig;
+use Foomo\Timer;
 
 /**
  * @link www.foomo.org
@@ -109,6 +110,6 @@ class Client
 	}
 	public function call($handler, $request)
 	{
-		return $this->send($handler, json_encode($request));
+		return  $this->send($handler, json_encode($request));
 	}
 }

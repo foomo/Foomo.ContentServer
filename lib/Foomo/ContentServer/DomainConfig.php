@@ -53,6 +53,11 @@ class DomainConfig extends AbstractConfig
 	 */
 	public $logLevel = "record";
 	/**
+	 * map data from anonymous json data back to prop php objects (performance hog)
+	 * @var bool
+	 */
+	public $mapData = false;
+	/**
 	 * @return Proxy
 	 */
 	public function getProxy()
