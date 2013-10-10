@@ -33,7 +33,7 @@ class Content
 	/**
 	 * @var Content\Node[]
 	 */
-	public $nodes = array();
+	public $nodes;
 	/**
 	 * @var Content\Env
 	 */
@@ -64,6 +64,9 @@ class Content
 	 */
 	public function addNode($name, $id, array $mimeTypes, $expand)
 	{
+		if(!is_array($this->nodes)) {
+			$this->nodes = array();
+		}
 		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
 		return $this;
 	}
