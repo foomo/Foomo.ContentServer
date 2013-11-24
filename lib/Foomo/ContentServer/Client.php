@@ -54,6 +54,9 @@ class Client
 		while($connected === false) {
 			$connected = socket_connect($this->socket, $address, $urlParts['port']);
 			if ($attempts > self::MAX_CONNECTION_ATTEMPTS) {
+				header('HTTP/1.1 503 Service Unavailable');
+				header('Status: 503 Service Unavailable');
+				header('Retry-After: 15');
 				trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
 			} else if($connected === false) {
 				if(!$triedToStartServer) {
