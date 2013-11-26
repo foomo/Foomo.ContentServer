@@ -144,8 +144,10 @@ class RepoNode implements \Iterator, \Countable
 
 	public function setNames($objs)
 	{
-		foreach((array)$objs as $language => $value) {
-			$this->addName($language, $value);
+		foreach((array)$objs as $region => $languageNames) {
+			foreach($languageNames as $language => $name) {
+				$this->addName($region, $language, $name);
+			}
 		}
 	}
 
@@ -172,9 +174,12 @@ class RepoNode implements \Iterator, \Countable
 		$this->{$prop}[$region][$language] = $value;
 
 	}
-	public function addName($language, $name)
+	public function addName($region, $language, $name)
 	{
-		$this->names[$language] = $name;
+		if(!isset($this->names[$region])) {
+			$this->names[$region] = array();
+		}
+		$this->names[$region][$language] = $name;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
