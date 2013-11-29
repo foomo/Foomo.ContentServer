@@ -29,4 +29,12 @@ class Update
 	 * @var Update\Stats
 	 */
 	public $stats;
+	/**
+	 * @var bool
+	 */
+	public $success;
+	/**
+	 * @var string
+	 */
+	public $errorMessage;
 }
