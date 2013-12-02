@@ -50,17 +50,17 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $mimeType;
 	/**
-	 * @var string[] hashmap
+	 * @var mixed
 	 */
 	public $URIs;
 	/**
-	 * @var string[]
+	 * @var string
 	 */
-	public $destinationIds;
+	public $destinationId;
 	/**
-	 * @var bool
+	 * @var mixed
 	 */
-	public $hidden;
+	public $hidden = array();
 	/**
 	 * @var string[]
 	 */
@@ -131,16 +131,6 @@ class RepoNode implements \Iterator, \Countable
 		}
 	}
 
-	public function setDestinationIds($objs)
-	{
-		if(!is_null($objs)) {
-			foreach((array)$objs as $region => $languages) {
-				foreach((array)$languages as $language => $value) {
-					$this->addDestinationId($region, $language, $value);
-				}
-			}
-		}
-	}
 
 	public function setNames($objs)
 	{
@@ -151,13 +141,26 @@ class RepoNode implements \Iterator, \Countable
 		}
 	}
 
+	public function setHidden($objs)
+	{
+		foreach((array)$objs as $region => $languageHidden) {
+			foreach($languageHidden as $language => $hidden) {
+				$this->hide($region, $language, $hidden);
+			}
+		}
+	}
+
+	public function hide($region, $language, $hide = true)
+	{
+		if(!isset($this->hidden[$region])) {
+			$this->hidden[$region] = array();
+		}
+		$this->hidden[$region][$language] = $hide;
+	}
+
 	public function addURI($region, $language, $URI)
 	{
 		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
-	}
-	public function addDestinationId($region, $language, $destinationId)
-	{
-		$this->addToRegionLanguageProp('destinationIds', $region, $language, $destinationId);
 	}
 	public function addLinkId($region, $language, $linkId)
 	{
