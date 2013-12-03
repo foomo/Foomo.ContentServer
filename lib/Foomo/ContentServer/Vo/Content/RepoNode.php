@@ -36,7 +36,7 @@ class RepoNode implements \Iterator, \Countable
 	/**
 	 * @var string[] hashmap
 	 */
-	public $names = array();
+	public $names;
 	/**
 	 * @var string
 	 */
@@ -56,11 +56,11 @@ class RepoNode implements \Iterator, \Countable
 	/**
 	 * @var mixed
 	 */
-	public $destinationIds = array();
+	public $destinationIds;
 	/**
 	 * @var mixed
 	 */
-	public $hidden = array();
+	public $hidden;
 	/**
 	 * @var string[]
 	 */
@@ -120,7 +120,6 @@ class RepoNode implements \Iterator, \Countable
 	}
 	public function addNode(RepoNode $node)
 	{
-
 		if(!is_array($this->nodes)) {
 			$this->nodes = array();
 			$this->index = array();
@@ -147,7 +146,6 @@ class RepoNode implements \Iterator, \Countable
 			}
 		}
 	}
-
 
 	public function setNames($objs)
 	{
