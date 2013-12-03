@@ -34,7 +34,7 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $regions;
 	/**
-	 * @var string[] hashmap
+	 * @var mixed hashmap
 	 */
 	public $names;
 	/**
