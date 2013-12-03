@@ -77,14 +77,26 @@ class Proxy implements ProxyInterface
 	}
 
 	/**
+	 * you want it all, at once - then buckle up your memory
+	 *
+	 * @return Vo\Content\RepoNode
+	 */
+	public function getRepo()
+	{
+		$request = new Vo\Requests\Repo;
+		return $this->client->call('getRepo', $request)->reply;
+	}
+	/**
 	 * @param string $id
+	 * @param string[] $dataFields
 	 *
 	 * @return \string[]
 	 */
-	public function getItemMap($id)
+	public function getItemMap($id, $dataFields = null)
 	{
 		$request = new Vo\Requests\ItemMap();
 		$request->id = $id;
+		$request->dataFields = $dataFields;
 		return $this->client->call('getItemMap', $request)->reply;
 	}
 

@@ -54,9 +54,9 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $URIs;
 	/**
-	 * @var string
+	 * @var mixed
 	 */
-	public $destinationId;
+	public $destinationIds = array();
 	/**
 	 * @var mixed
 	 */
@@ -74,9 +74,9 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $data;
 	/**
-	 * @var string[]
+	 * @var string
 	 */
-	public $linkIds;
+	public $linkId;
 
 	private $cursor = 0;
 
@@ -93,6 +93,23 @@ class RepoNode implements \Iterator, \Countable
 			}
 		}
 	}
+
+	public function setDestinationIds($objs)
+	{
+		if(!is_null($objs)) {
+			foreach((array)$objs as $region => $languages) {
+				foreach((array)$languages as $language => $value) {
+					$this->addDestinationId($region, $language, $value);
+				}
+			}
+		}
+	}
+
+	public function addDestinationId($region, $language, $destinationId)
+	{
+		$this->addToRegionLanguageProp('destinationIds', $region, $language, $destinationId);
+	}
+
 
 	public function addGroup($group)
 	{
@@ -161,10 +178,6 @@ class RepoNode implements \Iterator, \Countable
 	public function addURI($region, $language, $URI)
 	{
 		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
-	}
-	public function addLinkId($region, $language, $linkId)
-	{
-		$this->addToRegionLanguageProp('linkIds', $region, $language, $linkId);
 	}
 	private function addToRegionLanguageProp($prop, $region, $language, $value)
 	{

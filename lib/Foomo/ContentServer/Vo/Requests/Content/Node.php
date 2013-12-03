@@ -34,13 +34,19 @@ class Node
 	 */
 	public $mimeTypes;
 	/**
+	 * @var string[]
+	 */
+	public $dataFields;
+
+	/**
 	 * @var bool
 	 */
 	public $expand;
-	public function __construct($id, array $mimeTypes, $expand)
+	public function __construct($id, array $mimeTypes, $expand, array $dataFields = array())
 	{
 		$this->id = $id;
 		$this->mimeTypes = $mimeTypes;
+		$this->dataFields = $dataFields;
 		$this->expand = $expand;
 	}
 }

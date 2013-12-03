@@ -23,14 +23,6 @@ namespace Foomo\ContentServer\Vo\Requests;
  * @link www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
-class ItemMap
+class Repo
 {
-	/**
-	 * @var string
-	 */
-	public $id;
-	/**
-	 * @var string[]
-	 */
-	public $dataFields;
 }
