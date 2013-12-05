@@ -26,65 +26,30 @@ use Foomo\CliCall;
  */
 class ServerManager
 {
+	public static function callGarden(DomainConfig $config, array $parameters)
+	{
+		$uri = '';
+		foreach($parameters as $parameter) {
+			$uri .= '/' . urlencode($parameter);
+		}
+		return file_get_contents($config->gardenDaemonAddress . $uri);
+	}
 	public static function startServer(DomainConfig $config)
 	{
-		file_put_contents(
-			self::getPidFile($config),
-			$pid = trim(shell_exec($cmd = sprintf(
-				'%s > %s 2>&1 & echo $!',
-				$config->getServerCommand(),
-				$config->getLogfile()
-			)))
-		);
-		if(!self::serverIsRunning($config)) {
-			trigger_error('could not start server with this config ' . var_export($config, true), E_USER_ERROR);
-		}
+		self::callGarden($config, $config->getServerSpawnCommandArray());
 	}
 	public static function kill(DomainConfig $config)
 	{
-		if(self::serverIsRunning($config)) {
-			$call = CliCall::create('kill', array(self::getPid($config)));
-			$call->execute();
-		}
+		self::callGarden($config, array('cmd', 'kill', $config->getDaemonName()));
 	}
 	public static function serverIsRunning(DomainConfig $config)
 	{
-		$pid = self::getPid($config);
-		if($pid) {
-			$call = CliCall::create('ps', array('--no-headers', '-o%p', '-p', $pid));
-			$call->execute();
-			return $call->exitStatus == 0 && trim($call->stdOut) == $pid;
-		} else {
-			return false;
+		$daemonName = $config->getDaemonName();
+		foreach(json_decode($reply = self::callGarden($config, array('status'))) as $daemonStatus) {
+			if($daemonStatus->name == $daemonName && $daemonStatus->running == true) {
+				return true;
+			}
 		}
-		// http://stackoverflow.com/questions/11532188/how-to-get-rid-of-the-headers-in-a-ps-command-in-mac-os-x
-		// ps -p 111 -o %p | sed 1d
-		// http://stackoverflow.com/questions/3043978/bash-how-to-check-if-a-process-id-pid-exists
-
-		/*
-		 *
-		 *
-		 *
-			frederik@renelezard-dev:~/.ssh$ ps --no-headers -p 19771
-			19771 ?        00:00:00 apache2
-			frederik@renelezard-dev:~/.ssh$ ps -p 19771
-  			PID TTY          TIME CMD
-			19771 ?        00:00:00 apache2
-		*/
-
+		return false;
 	}
-	public static function getPid(DomainConfig $config)
-	{
-		$pidFile = self::getPidFile($config);
-		$pid = null;
-		if(file_exists($pidFile)) {
-			$pid = trim(file_get_contents(self::getPidFile($config)));
-		}
-		return !empty($pid)?$pid:null;
-	}
-	public static function getPidFile(DomainConfig $config)
-	{
-		return Module::getTempDir() . DIRECTORY_SEPARATOR . $config->getName();
-	}
-
 }

@@ -69,6 +69,7 @@ class Module extends \Foomo\Modules\ModuleBase
 		if($oldConfig && $oldConfig->getName() == 'Foomo.ContentServer.config') {
 			if(ServerManager::serverIsRunning($oldConfig)) {
 				ServerManager::kill($oldConfig);
+				ServerManager::startServer($newConfig);
 			}
 		}
 	}
