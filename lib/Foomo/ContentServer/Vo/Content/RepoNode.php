@@ -129,6 +129,26 @@ class RepoNode implements \Iterator, \Countable
 			$this->index[] = $node->id;
 		}
 	}
+	public function removeNode(RepoNode $node)
+	{
+		$index = array();
+		foreach($this->index as $id) {
+			if($node->id != $id) {
+				//keep it
+				$index[] = $id;
+			}
+		}
+		$this->index = $index;
+
+		$nodes = array();
+		foreach($this->nodes as $nodeInternal) {
+			if($node->id != $nodeInternal->id) {
+				$nodes[$nodeInternal->id] = $nodeInternal;
+			}
+		}
+		$this->nodes = $nodes;
+		$this->rewind();
+	}
 	public function addRegion($region) {
 		if(is_null($this->regions)) {
 			$this->regions = array();
