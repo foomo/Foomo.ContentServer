@@ -30,6 +30,10 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $id;
 	/**
+	 * @var mixed
+	 */
+	public $URIIndices;
+	/**
 	 * @var string[]
 	 */
 	public $regions;
@@ -167,6 +171,15 @@ class RepoNode implements \Iterator, \Countable
 		}
 	}
 
+	public function setURIIndices($objs)
+	{
+		foreach((array)$objs as $region => $languages) {
+			foreach((array)$languages as $language => $value) {
+				$this->addURIIndex($region, $language, $value);
+			}
+		}
+	}
+
 	public function setNames($objs)
 	{
 		foreach((array)$objs as $region => $languageNames) {
@@ -196,6 +209,11 @@ class RepoNode implements \Iterator, \Countable
 	public function addURI($region, $language, $URI)
 	{
 		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
+	}
+
+	public function addURIIndex($region, $language, $URIIndex)
+	{
+		$this->addToRegionLanguageProp('URIIndices', $region, $language, $URIIndex);
 	}
 	private function addToRegionLanguageProp($prop, $region, $language, $value)
 	{
