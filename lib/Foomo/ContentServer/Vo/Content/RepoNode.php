@@ -30,10 +30,6 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $id;
 	/**
-	 * @var mixed
-	 */
-	public $URIIndices;
-	/**
 	 * @var string[]
 	 */
 	public $regions;
@@ -46,13 +42,17 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $handler;
 	/**
+	 * @var string
+	 */
+	public $mimeType;
+	/**
 	 * @var string[]
 	 */
 	public $groups;
 	/**
-	 * @var string
+	 * @var string[]
 	 */
-	public $mimeType;
+	public $states;
 	/**
 	 * @var mixed
 	 */
@@ -120,7 +120,9 @@ class RepoNode implements \Iterator, \Countable
 		if(!is_array($this->groups)) {
 			$this->groups = array();
 		}
-		$this->groups[] = $group;
+		if(!in_array($group, $this->groups)) {
+			$this->groups[] = $group;
+		}
 	}
 	public function addNode(RepoNode $node)
 	{
@@ -171,15 +173,6 @@ class RepoNode implements \Iterator, \Countable
 		}
 	}
 
-	public function setURIIndices($objs)
-	{
-		foreach((array)$objs as $region => $languages) {
-			foreach((array)$languages as $language => $value) {
-				$this->addURIIndex($region, $language, $value);
-			}
-		}
-	}
-
 	public function setNames($objs)
 	{
 		foreach((array)$objs as $region => $languageNames) {
@@ -206,15 +199,21 @@ class RepoNode implements \Iterator, \Countable
 		$this->hidden[$region][$language] = $hide;
 	}
 
+	public function addState($state)
+	{
+		if(!is_array($this->states)) {
+			$this->states = array();
+		}
+		if(!in_array($state, $this->states)) {
+			$this->states[] = $state;
+		}
+	}
+
 	public function addURI($region, $language, $URI)
 	{
 		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
 	}
 
-	public function addURIIndex($region, $language, $URIIndex)
-	{
-		$this->addToRegionLanguageProp('URIIndices', $region, $language, $URIIndex);
-	}
 	private function addToRegionLanguageProp($prop, $region, $language, $value)
 	{
 		if(!isset($this->{$prop})) {
