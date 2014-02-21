@@ -52,7 +52,7 @@ class RepoNode implements \Iterator, \Countable
 	/**
 	 * @var string[]
 	 */
-	public $states;
+	public $states = array();
 	/**
 	 * @var mixed
 	 */

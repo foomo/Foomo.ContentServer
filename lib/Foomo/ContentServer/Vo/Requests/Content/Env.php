@@ -40,6 +40,10 @@ class Env
 	 * @var array
 	 */
 	public $data;
+	/**
+	 * @var string
+	 */
+	public $state;
 	public static function create(Defaults $defaults, array $groups = array(), array $data = array())
 	{
 		$env = new self();
