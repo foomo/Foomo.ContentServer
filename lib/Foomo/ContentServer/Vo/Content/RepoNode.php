@@ -52,7 +52,7 @@ class RepoNode implements \Iterator, \Countable
 	/**
 	 * @var string[]
 	 */
-	public $states = array();
+	public $states;
 	/**
 	 * @var mixed
 	 */
@@ -153,6 +153,9 @@ class RepoNode implements \Iterator, \Countable
 			}
 		}
 		$this->nodes = $nodes;
+		if(empty($this->nodes)) {
+			$this->index = $this->nodes = null;
+		}
 		$this->rewind();
 	}
 	public function addRegion($region) {
