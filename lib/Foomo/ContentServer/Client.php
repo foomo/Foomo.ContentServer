@@ -101,7 +101,7 @@ class Client
 				if($incoming == '{') {
 					$bytesToRead = ((int) $msg) - 1;
 					$msg = '{';
-					$window = $bytesToRead;
+					$window = self::SOCKET_READ_WINDOW_SIZE;
 				} else {
 					$msg .= $incoming;
 				}
@@ -149,14 +149,13 @@ class Client
 					Timer::stop($wt);
 					Timer::start($rt = __METHOD__ . ' receive ' . $bytesToRead . ' for ' . $handler);
 					$msg = '{';
-					$window = $bytesToRead;
+					$window = self::SOCKET_READ_WINDOW_SIZE;
 				} else {
 					$msg .= $incoming;
 				}
 			} else {
 				Timer::addMarker(__METHOD__ . " receiving data " . strlen($incoming));
 				$bytesRead += strlen($incoming);
-				$window = $bytesRead - $bytesRead;
 				$msg .= $incoming;
 				if($bytesRead == $bytesToRead) {
 					Timer::stop($rt);
