@@ -33,6 +33,9 @@ class Client
 	private $server;
 	private $socket;
 	const MAX_CONNECTION_ATTEMPTS = 1;
+
+	public static $debug = false;
+
 	public function __construct(DomainConfig $config)
 	{
 		$this->server = $config->server;
@@ -113,6 +116,48 @@ class Client
 	}
 	public function call($handler, $request)
 	{
-		return  $this->send($handler, json_encode($request));
+		if(self::$debug) {
+			return $this->sendDebug($handler, json_encode($request));
+		} else {
+			return $this->send($handler, json_encode($request));
+		}
+	}
+	private function sendDebug($handler, $rawData)
+	{
+		Timer::start($topic = __METHOD__ . ' sending data to ' . $handler);
+		$sendBytes = $handler . ':' . strlen($rawData) . ':' . $rawData;
+		$bytesWritten = socket_write($this->socket, $sendBytes, strlen($sendBytes));
+		if($bytesWritten != strlen($sendBytes)) {
+			trigger_error('failed to write my bytes', E_USER_ERROR);
+		}
+		Timer::stop($topic);
+		Timer::start($wt = __METHOD__ . ' waiting ' . $handler);
+		$bytesRead = 0;
+		$bytesToRead = -1;
+		$msg = '';
+		$window = 1;
+		while (false !== $incoming = socket_read($this->socket, $window)) {
+			if($bytesToRead < 0) {
+				if($incoming == '{') {
+
+					$bytesToRead = ((int) $msg) - 1;
+					Timer::stop($wt);
+					Timer::start($rt = __METHOD__ . ' receive ' . $bytesToRead . ' for ' . $handler);
+					$msg = '{';
+					$window = $bytesToRead;
+				} else {
+					$msg .= $incoming;
+				}
+			} else {
+				Timer::addMarker(__METHOD__ . " receiving data " . strlen($incoming));
+				$bytesRead += strlen($incoming);
+				$msg .= $incoming;
+				if($bytesRead == $bytesToRead) {
+					Timer::stop($rt);
+					return json_decode($msg);
+				}
+			}
+		}
+		var_dump('wtf', $bytesToRead, $bytesRead, $incoming, $msg);
 	}
 }
