@@ -83,6 +83,7 @@ class Client
 	{
 		socket_close($this->socket);
 	}
+	const SOCKET_READ_WINDOW_SIZE = 8192;
 
 	private function send($handler, $rawData)
 	{
@@ -112,7 +113,11 @@ class Client
 				}
 			}
 		}
-		var_dump('wtf', $bytesToRead, $bytesRead, $incoming, $msg);
+		$this->triggerSendError($bytesToRead, $bytesRead, $incoming, $msg);
+	}
+	private function triggerSendError($bytesToRead, $bytesRead, $incoming, $msg)
+	{
+		trigger_error('well, that did not work bytes to read: ' . $bytesToRead . ', bytesRead: ' . $bytesRead . ', incoming: ' . $incoming . ', msg: ' . $msg, E_USER_ERROR);
 	}
 	public function call($handler, $request)
 	{
@@ -151,6 +156,7 @@ class Client
 			} else {
 				Timer::addMarker(__METHOD__ . " receiving data " . strlen($incoming));
 				$bytesRead += strlen($incoming);
+				$window = $bytesRead - $bytesRead;
 				$msg .= $incoming;
 				if($bytesRead == $bytesToRead) {
 					Timer::stop($rt);
@@ -158,6 +164,6 @@ class Client
 				}
 			}
 		}
-		var_dump('wtf', $bytesToRead, $bytesRead, $incoming, $msg);
+		$this->triggerSendError($bytesToRead, $bytesRead, $incoming, $msg);
 	}
 }
