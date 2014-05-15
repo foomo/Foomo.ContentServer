@@ -18,6 +18,7 @@
  */
 
 namespace Foomo\ContentServer;
+use Foomo\ContentServer\Vo\Content\Node;
 use Foomo\ContentServer\Vo\Content\SiteContent;
 
 /**
