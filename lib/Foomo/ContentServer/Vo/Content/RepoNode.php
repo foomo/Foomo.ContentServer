@@ -74,7 +74,7 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $nodes;
 	/**
-	 * @var hash
+	 * @var array
 	 */
 	public $data;
 	/**
