@@ -34,7 +34,7 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $regions;
 	/**
-	 * @var mixed hashmap
+	 * @var array
 	 */
 	public $names;
 	/**
@@ -58,11 +58,11 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $URIs;
 	/**
-	 * @var mixed
+	 * @var array
 	 */
 	public $destinationIds;
 	/**
-	 * @var mixed
+	 * @var array
 	 */
 	public $hidden;
 	/**
@@ -78,7 +78,7 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $data;
 	/**
-	 * @var string
+	 * @var array
 	 */
 	public $linkId;
 
@@ -114,6 +114,22 @@ class RepoNode implements \Iterator, \Countable
 		$this->addToRegionLanguageProp('destinationIds', $region, $language, $destinationId);
 	}
 
+
+	public function setLinkId($linkIds)
+	{
+		if(!is_null($linkIds)) {
+			foreach((array)$linkIds as $region => $languages) {
+				foreach((array)$languages as $language => $value) {
+					$this->addLinkId($region, $language, $value);
+				}
+			}
+		}
+	}
+
+	public function addLinkId($region, $language, $linkId)
+	{
+		$this->addToRegionLanguageProp('linkId', $region, $language, $linkId);
+	}
 
 	public function addGroup($group)
 	{
