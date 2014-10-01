@@ -80,7 +80,7 @@ class RepoNode implements \Iterator, \Countable
 	/**
 	 * @var array
 	 */
-	public $linkId;
+	public $linkIds;
 
 	private $cursor = 0;
 
@@ -115,7 +115,7 @@ class RepoNode implements \Iterator, \Countable
 	}
 
 
-	public function setLinkId($linkIds)
+	public function setLinkIds($linkIds)
 	{
 		if(!is_null($linkIds)) {
 			foreach((array)$linkIds as $region => $languages) {
@@ -128,7 +128,7 @@ class RepoNode implements \Iterator, \Countable
 
 	public function addLinkId($region, $language, $linkId)
 	{
-		$this->addToRegionLanguageProp('linkId', $region, $language, $linkId);
+		$this->addToRegionLanguageProp('linkIds', $region, $language, $linkId);
 	}
 
 	public function addGroup($group)
