@@ -56,7 +56,7 @@ class SiteContent
 	 */
 	public $item;
 	/**
-	 * @var array
+	 * @var mixed
 	 */
 	public $data;
 	/**
