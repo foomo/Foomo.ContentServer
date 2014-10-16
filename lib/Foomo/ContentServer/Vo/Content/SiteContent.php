@@ -18,17 +18,27 @@
  */
 
 namespace Foomo\ContentServer\Vo\Content;
+
 use Foomo\SimpleData\VoMapper;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class SiteContent
 {
-	const STATUS_OK = 200;
+	// --------------------------------------------------------------------------------------------
+	// ~ Constants
+	// --------------------------------------------------------------------------------------------
+
+	const STATUS_OK        = 200;
 	const STATUS_NOT_FOUND = 404;
 	const STATUS_FORBIDDEN = 403;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var int
 	 */
@@ -42,15 +52,17 @@ class SiteContent
 	/**
 	 * @var string
 	 */
-	public $region;
+	public $dimension;
 	/**
 	 * @var string
 	 */
-	public $language;
+	public $mimeType;
 	/**
-	 * @var string
+	 * resolved part of URI map[string]string map[dimension]uri
+	 *
+	 * @var array
 	 */
-	public $handler;
+	public $URIs;
 	/**
 	 * @var Item
 	 */
@@ -67,7 +79,17 @@ class SiteContent
 	 * @var Node[]
 	 */
 	public $nodes = array();
-	public function addToNodes($key, $value) {
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 */
+	public function addToNodes($key, $value)
+	{
 		$this->nodes[$key] = VoMapper::map($value, new Node);
 	}
 }

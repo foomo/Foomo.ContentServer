@@ -18,15 +18,20 @@
  */
 
 namespace Foomo\ContentServer;
+
 use Foomo\ContentServer\Vo\Content\Node;
 use Foomo\ContentServer\Vo\Content\SiteContent;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 interface ProxyInterface
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * get content
 	 *
@@ -35,15 +40,15 @@ interface ProxyInterface
 	 * @return SiteContent
 	 */
 	function getContent(Vo\Requests\Content $contentRequest);
+
 	/**
 	 *
-	 * @param string $region
-	 * @param string $language
+	 * @param string   $dimension
 	 * @param string[] $ids
 	 *
 	 * @return string[]
 	 */
-	function getURIs($region, $language, $ids);
+	function getURIs($dimension, $ids);
 
 	/**
 	 * @param string $id
@@ -58,6 +63,7 @@ interface ProxyInterface
 	 * @return Node[] hash
 	 */
 	function getNodes(Vo\Requests\Nodes $nodeRequest);
+
 	/**
 	 * @return Vo\Responses\Update
 	 */

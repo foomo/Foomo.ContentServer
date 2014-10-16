@@ -18,20 +18,19 @@
  */
 
 namespace Foomo\ContentServer\Vo\Requests\Content;
-use Foomo\ContentServer\Vo\Requests\Content\Env\Defaults;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Env
 {
 	/**
-	 * if you can not resolve a content, you need a region / language to fall back to in order to retrieve your nodes
+	 * if you can not resolve a content, offer you dimension lookup chain
 	 *
-	 * @var Env\Defaults
+	 * @var string[]
 	 */
-	public $defaults;
+	public $dimensions;
 	/**
 	 * @var string[]
 	 */
@@ -40,15 +39,12 @@ class Env
 	 * @var array
 	 */
 	public $data;
-	/**
-	 * @var string
-	 */
-	public $state;
-	public static function create(Defaults $defaults, array $groups = array(), array $data = array())
+
+	public static function create(array $dimensions, array $groups = array(), array $data = array())
 	{
 		$env = new self();
 		$env->groups = $groups;
-		$env->defaults = $defaults;
+		$env->dimensions = $dimensions;
 		$env->data = $data;
 		return $env;
 	}

@@ -20,11 +20,15 @@
 namespace Foomo\ContentServer\Vo\Requests;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class URIs
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var string[]
 	 */
@@ -32,9 +36,5 @@ class URIs
 	/**
 	 * @var string
 	 */
-	public $region;
-	/**
-	 * @var string
-	 */
-	public $language;
+	public $dimension;
 }

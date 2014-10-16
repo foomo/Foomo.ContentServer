@@ -20,27 +20,23 @@
 namespace Foomo\ContentServer\Vo\Content;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class RepoNode implements \Iterator, \Countable
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var string
 	 */
 	public $id;
 	/**
-	 * @var string[]
-	 */
-	public $regions;
-	/**
-	 * @var array
-	 */
-	public $names;
-	/**
 	 * @var string
 	 */
-	public $handler;
+	public $name;
 	/**
 	 * @var string
 	 */
@@ -50,19 +46,15 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $groups;
 	/**
-	 * @var string[]
+	 * @var string
 	 */
-	public $states;
+	public $URI;
 	/**
-	 * @var mixed
+	 * @var string
 	 */
-	public $URIs;
+	public $destinationId;
 	/**
-	 * @var array
-	 */
-	public $destinationIds;
-	/**
-	 * @var array
+	 * @var bool
 	 */
 	public $hidden;
 	/**
@@ -78,208 +70,143 @@ class RepoNode implements \Iterator, \Countable
 	 */
 	public $data;
 	/**
-	 * @var array
+	 * @var string
 	 */
-	public $linkIds;
-
+	public $linkId;
+	/**
+	 * @var int
+	 */
 	private $cursor = 0;
 
-	public function setData($data)
-	{
-		if(!isset($this->data)) {
-			$this->data = array();
-		}
-		foreach($data as $prop => $value) {
-			if(is_object($this->data)) {
-				$this->data->{$prop} = $value;
-			} else {
-				$this->data[$prop] = $value;
-			}
-		}
-	}
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
 
-	public function setDestinationIds($objs)
-	{
-		if(!is_null($objs)) {
-			foreach((array)$objs as $region => $languages) {
-				foreach((array)$languages as $language => $value) {
-					$this->addDestinationId($region, $language, $value);
-				}
-			}
-		}
-	}
-
-	public function addDestinationId($region, $language, $destinationId)
-	{
-		$this->addToRegionLanguageProp('destinationIds', $region, $language, $destinationId);
-	}
-
-
-	public function setLinkIds($linkIds)
-	{
-		if(!is_null($linkIds)) {
-			foreach((array)$linkIds as $region => $languages) {
-				foreach((array)$languages as $language => $value) {
-					$this->addLinkId($region, $language, $value);
-				}
-			}
-		}
-	}
-
-	public function addLinkId($region, $language, $linkId)
-	{
-		$this->addToRegionLanguageProp('linkIds', $region, $language, $linkId);
-	}
-
+	/**
+	 * @param string $group
+	 * @return $this
+	 */
 	public function addGroup($group)
 	{
-		if(!is_array($this->groups)) {
+		if (!is_array($this->groups)) {
 			$this->groups = array();
 		}
-		if(!in_array($group, $this->groups)) {
+		if (!in_array($group, $this->groups)) {
 			$this->groups[] = $group;
 		}
+		return $this;
 	}
+
+	/**
+	 * @param mixed $data
+	 * @return $this
+	 */
+	public function setData($data)
+	{
+		if (!isset($this->data)) {
+			$this->data = array();
+		}
+		foreach ($data as $prop => $value) {
+			$this->addData($prop, $value);
+		}
+		return $this;
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return $this
+	 */
+	public function addData($key, $value)
+	{
+		if (!is_array($this->data)) {
+			$this->data = array();
+		}
+		if (is_object($this->data)) {
+			$this->data->{$key} = $value;
+		} else {
+			$this->data[$key] = $value;
+		}
+		return $this;
+	}
+
+
+	/**
+	 * @param RepoNode $node
+	 * @return $this
+	 */
 	public function addNode(RepoNode $node)
 	{
-		if(!is_array($this->nodes)) {
+		if (!is_array($this->nodes)) {
 			$this->nodes = array();
 			$this->index = array();
 		}
-		if(!in_array($node->id, $this->index)) {
+		if (!in_array($node->id, $this->index)) {
 			$this->nodes[$node->id] = $node;
 			$this->index[] = $node->id;
 		}
+		return $this;
 	}
+
+	/**
+	 * @param RepoNode $node
+	 * @return $this
+	 */
 	public function removeNode(RepoNode $node)
 	{
-		$index = array();
-		foreach($this->index as $id) {
-			if($node->id != $id) {
-				//keep it
-				$index[] = $id;
-			}
-		}
-		$this->index = $index;
-
-		$nodes = array();
-		foreach($this->nodes as $nodeInternal) {
-			if($node->id != $nodeInternal->id) {
-				$nodes[$nodeInternal->id] = $nodeInternal;
-			}
-		}
-		$this->nodes = $nodes;
-		if(empty($this->nodes)) {
-			$this->index = $this->nodes = null;
-		}
+		array_splice($this->nodes, array_search($node, $this->nodes), 1);
+		array_splice($this->index, array_search($node->id, $this->index), 1);
 		$this->rewind();
-	}
-	public function addRegion($region) {
-		if(is_null($this->regions)) {
-			$this->regions = array();
-		}
-		if(!in_array($region, $this->regions)) {
-			$this->regions[] = $region;
-		}
-	}
-
-	public function setURIs($objs)
-	{
-		foreach((array)$objs as $region => $languages) {
-			foreach((array)$languages as $language => $value) {
-				$this->addURI($region, $language, $value);
-			}
-		}
-	}
-
-	public function setNames($objs)
-	{
-		foreach((array)$objs as $region => $languageNames) {
-			foreach($languageNames as $language => $name) {
-				$this->addName($region, $language, $name);
-			}
-		}
-	}
-
-	public function setHidden($objs)
-	{
-		foreach((array)$objs as $region => $languageHidden) {
-			foreach($languageHidden as $language => $hidden) {
-				$this->hide($region, $language, $hidden);
-			}
-		}
-	}
-
-	public function hide($region, $language, $hide = true)
-	{
-		if(!isset($this->hidden[$region])) {
-			$this->hidden[$region] = array();
-		}
-		$this->hidden[$region][$language] = $hide;
-	}
-
-	public function addState($state)
-	{
-		if(!is_array($this->states)) {
-			$this->states = array();
-		}
-		if(!in_array($state, $this->states)) {
-			$this->states[] = $state;
-		}
-	}
-
-	public function addURI($region, $language, $URI)
-	{
-		$this->addToRegionLanguageProp('URIs', $region, $language, $URI);
-	}
-
-	private function addToRegionLanguageProp($prop, $region, $language, $value)
-	{
-		if(!isset($this->{$prop})) {
-			$this->{$prop} = array();
-		}
-		if(!isset($this->{$prop}[$region])) {
-			$this->{$prop}[$region] = array();
-		}
-		$this->{$prop}[$region][$language] = $value;
-
-	}
-	public function addName($region, $language, $name)
-	{
-		if(!isset($this->names[$region])) {
-			$this->names[$region] = array();
-		}
-		$this->names[$region][$language] = $name;
+		return $this;
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	// ~ Iterator and Countable implementation
 	//------------------------------------------------------------------------------------------------------------------
 
-    public function current()
+	/**
+	 *
+	 */
+	public function rewind()
+	{
+		$this->cursor = 0;
+	}
+
+	/**
+	 * @return RepoNode
+	 */
+	public function current()
 	{
 		return $this->nodes[$this->key()];
 	}
 
-    public function next()
-	{
-		$this->cursor ++;
-	}
-
-    public function key()
+	/**
+	 * @return string
+	 */
+	public function key()
 	{
 		return $this->index[$this->cursor];
 	}
 
-    public function valid()
+	/**
+	 *
+	 */
+	public function next()
+	{
+		$this->cursor++;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function valid()
 	{
 		return count($this->index) > $this->cursor;
 	}
 
-    public function rewind()
-	{
-		$this->cursor = 0;
-	}
+	/**
+	 * @return int
+	 */
 	public function count()
 	{
 		return count($this->index);

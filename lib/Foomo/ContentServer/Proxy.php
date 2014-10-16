@@ -18,38 +18,53 @@
  */
 
 namespace Foomo\ContentServer;
+
 use Foomo\ContentServer\Vo\Content\Node;
 use Foomo\ContentServer\Vo\Content\SiteContent;
 use Foomo\SimpleData\VoMapper;
 use Foomo\Timer;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Proxy implements ProxyInterface
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var TCPProxy\Client
 	 * @internal get it from your domain config
 	 */
 	private $client;
 	/**
-	 * turn this of for higher performance
+	 * Turn this of for higher performance
+	 *
 	 * @var bool
 	 */
 	private $mapData = false;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Constructor
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param DomainConfig $config
+	 */
 	public function __construct(DomainConfig $config)
 	{
 		$this->client = new TCPProxy\Client($config);
 		$this->mapData = $config->mapData;
 	}
 
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
 	/**
-	 * get content
-	 *
 	 * @param Vo\Requests\Content $contentRequest
-	 *
 	 * @return SiteContent
 	 */
 	public function getContent(Vo\Requests\Content $contentRequest)
@@ -61,18 +76,39 @@ class Proxy implements ProxyInterface
 	}
 
 	/**
-	 * @param string    $region
-	 * @param string    $language
+	 * @param mixed  $response
+	 * @param string $voClass
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	protected function mapResponse($response, $voClass)
+	{
+		// $response = (array) $response;
+		if (count($response) == 2 && sort(array_keys($response)) == array('code', 'message')) {
+			throw new \Exception($response['message'], $response['code']);
+		} else {
+			if ($this->mapData) {
+				Timer::start(__METHOD__);
+				$mapped = VoMapper::map($response, new $voClass);
+				Timer::stop(__METHOD__);
+				return $mapped;
+			} else {
+				return $response;
+			}
+		}
+	}
+
+	/**
+	 * @param string    $dimension
 	 * @param \string[] $ids
 	 *
 	 * @return \string[]
 	 */
-	public function getURIs($region, $language, $ids)
+	public function getURIs($dimension, $ids)
 	{
 		$request = new Vo\Requests\URIs();
 		$request->ids = $ids;
-		$request->region = $region;
-		$request->language = $language;
+		$request->dimension = $dimension;
 		return $this->client->call('getURIs', $request)->reply;
 	}
 
@@ -86,8 +122,9 @@ class Proxy implements ProxyInterface
 		$request = new Vo\Requests\Repo;
 		return $this->client->call('getRepo', $request)->reply;
 	}
+
 	/**
-	 * @param string $id
+	 * @param string   $id
 	 * @param string[] $dataFields
 	 *
 	 * @return \string[]
@@ -108,11 +145,15 @@ class Proxy implements ProxyInterface
 	public function getNodes(Vo\Requests\Nodes $nodeRequest)
 	{
 		$nodes = array();
-		foreach($this->client->call('getNodes', $nodeRequest)->reply as $nodeName => $rawNode) {
+		foreach ($this->client->call('getNodes', $nodeRequest)->reply as $nodeName => $rawNode) {
 			$nodes[$nodeName] = VoMapper::map($rawNode, new Node());
 		}
 		return $nodes;
 	}
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Protected methods
+	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * @return Vo\Responses\Update
@@ -120,23 +161,5 @@ class Proxy implements ProxyInterface
 	public function update()
 	{
 		return self::mapResponse($this->client->call('update', new Vo\Requests\Update())->reply, new Vo\Responses\Update());
-	}
-
-
-	protected function mapResponse($response, $voClass)
-	{
-		// $response = (array) $response;
-		if(count($response) == 2 && sort(array_keys($response)) == array('code', 'message')) {
-			throw new \Exception($response['message'], $response['code']);
-		} else {
-			if($this->mapData) {
-				Timer::start(__METHOD__);
-				$mapped = VoMapper::map($response, new $voClass);
-				Timer::stop(__METHOD__);
-				return $mapped;
-			} else {
-				return $response;
-			}
-		}
 	}
 }
