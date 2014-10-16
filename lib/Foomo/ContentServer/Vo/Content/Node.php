@@ -107,6 +107,6 @@ class Node implements \Iterator, \Countable
 	 */
 	public function count()
 	{
-		return count($this->index);
+		return count(get_object_vars($this->index));
 	}
 }
