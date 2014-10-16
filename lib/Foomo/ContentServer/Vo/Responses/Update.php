@@ -20,11 +20,15 @@
 namespace Foomo\ContentServer\Vo\Responses;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Update
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var Update\Stats
 	 */

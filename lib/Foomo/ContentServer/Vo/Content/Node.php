@@ -18,60 +18,93 @@
  */
 
 namespace Foomo\ContentServer\Vo\Content;
+
 use Foomo\SimpleData\VoMapper;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Node implements \Iterator, \Countable
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var Item
 	 */
 	public $item;
-
 	/**
 	 * @var Node[]
 	 */
 	public $nodes = array();
-
 	/**
 	 * @internal
 	 * @var string[]
 	 */
 	public $index = array();
-
+	/**
+	 * @var int
+	 */
 	private $cursor = 0;
 
-	public function addToNodes($key, $value) {
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	public function addToNodes($key, $value)
+	{
 		$this->nodes[$key] = VoMapper::map($value, new Node);
 	}
 
-    public function current()
+	/**
+	 * @return Node
+	 */
+	public function current()
 	{
 		return $this->nodes[$this->key()];
 	}
 
-    public function next()
-	{
-		$this->cursor ++;
-	}
-
-    public function key()
+	/**
+	 * @return string
+	 */
+	public function key()
 	{
 		return $this->index[$this->cursor];
 	}
 
-    public function valid()
+	/**
+	 *
+	 */
+	public function next()
+	{
+		$this->cursor++;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function valid()
 	{
 		return count($this->index) > $this->cursor;
 	}
 
-    public function rewind()
+	/**
+	 *
+	 */
+	public function rewind()
 	{
 		$this->cursor = 0;
 	}
+
+	/**
+	 * @return int
+	 */
 	public function count()
 	{
 		return count($this->index);

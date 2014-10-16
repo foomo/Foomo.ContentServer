@@ -25,6 +25,10 @@ namespace Foomo\ContentServer\Vo\Requests\Content;
  */
 class Env
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * if you can not resolve a content, offer you dimension lookup chain
 	 *
@@ -40,6 +44,16 @@ class Env
 	 */
 	public $data;
 
+	// --------------------------------------------------------------------------------------------
+	// ~ Public static methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param string[] $dimensions
+	 * @param string[] $groups
+	 * @param array    $data
+	 * @return Env
+	 */
 	public static function create(array $dimensions, array $groups = array(), array $data = array())
 	{
 		$env = new self();

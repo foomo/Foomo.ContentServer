@@ -18,22 +18,60 @@
  */
 
 namespace Foomo\ContentServer\Vo\Requests;
+
 use Foomo\ContentServer\Vo\Requests\Content\Env;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Nodes
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var Content\Node[]
 	 */
 	public $nodes = array();
 	/**
-	 * @var Content\Env
+	 * @var Env
 	 */
 	public $env;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Constructor
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param Env $env
+	 */
+	private function __construct(Env $env)
+	{
+		$this->env = $env;
+	}
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param string   $name
+	 * @param string   $id
+	 * @param string[] array $mimeTypes
+	 * @param bool     $expand
+	 * @return Content
+	 */
+	public function addNode($name, $id, array $mimeTypes, $expand)
+	{
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
+		return $this;
+	}
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Public static methods
+	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * @param Env $env
@@ -43,22 +81,5 @@ class Nodes
 	public static function create(Env $env)
 	{
 		return new self($env);
-	}
-	private function __construct($env)
-	{
-		$this->env = $env;
-	}
-
-	/**
-	 * @param string $name
-	 * @param string $id
-	 * @param string[] array $mimeTypes
-	 * @param bool $expand
-	 * @return Content
-	 */
-	public function addNode($name, $id, array $mimeTypes, $expand)
-	{
-		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
-		return $this;
 	}
 }

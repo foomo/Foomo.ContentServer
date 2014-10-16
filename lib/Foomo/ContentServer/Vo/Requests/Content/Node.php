@@ -20,11 +20,15 @@
 namespace Foomo\ContentServer\Vo\Requests\Content;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Node
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @var string
 	 */
@@ -37,16 +41,26 @@ class Node
 	 * @var string[]
 	 */
 	public $dataFields;
-
 	/**
 	 * @var bool
 	 */
 	public $expand;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Constructor
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param string   $id
+	 * @param string[] $mimeTypes
+	 * @param bool     $expand
+	 * @param string[] $dataFields
+	 */
 	public function __construct($id, array $mimeTypes, $expand, array $dataFields = array())
 	{
 		$this->id = $id;
+		$this->expand = $expand;
 		$this->mimeTypes = $mimeTypes;
 		$this->dataFields = $dataFields;
-		$this->expand = $expand;
 	}
 }

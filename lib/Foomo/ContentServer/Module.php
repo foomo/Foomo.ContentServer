@@ -20,7 +20,7 @@
 namespace Foomo\ContentServer;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Module extends \Foomo\Modules\ModuleBase
@@ -29,8 +29,8 @@ class Module extends \Foomo\Modules\ModuleBase
 	// ~ Constants
 	//---------------------------------------------------------------------------------------------
 
-	const VERSION = '0.2.1';
-	const NAME = 'Foomo.ContentServer';
+	const VERSION = '0.3.0';
+	const NAME    = 'Foomo.ContentServer';
 
 	//---------------------------------------------------------------------------------------------
 	// ~ Overriden static methods
@@ -64,10 +64,18 @@ class Module extends \Foomo\Modules\ModuleBase
 			\Foomo\Modules\Resource\Module::getResource('Foomo.SimpleData', '0.3.*')
 		);
 	}
+
+	/**
+	 * @param \Foomo\Config\AbstractConfig $oldConfig
+	 * @param \Foomo\Config\AbstractConfig $newConfig
+	 * @param string                       $module
+	 * @param string                       $domain
+	 * @throws \Exception
+	 */
 	public static function hookPostConfigUpdate($oldConfig, $newConfig, $module, $domain)
 	{
-		if($oldConfig && $oldConfig->getName() == 'Foomo.ContentServer.config') {
-			if(ServerManager::serverIsRunning($oldConfig)) {
+		if ($oldConfig && $oldConfig->getName() == 'Foomo.ContentServer.config') {
+			if (ServerManager::serverIsRunning($oldConfig)) {
 				ServerManager::kill($oldConfig);
 				ServerManager::startServer($newConfig);
 			}

@@ -18,19 +18,26 @@
  */
 
 namespace Foomo\ContentServer;
+
 use Foomo\Config\AbstractConfig;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class DomainConfig extends AbstractConfig
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Constants
+	// --------------------------------------------------------------------------------------------
 
 	const NAME = 'Foomo.ContentServer.config';
-	private $proxy;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
 	/**
-	 *
 	 * @var string
 	 */
 	public $gardenDaemonAddress = 'http://127.0.0.1:8080';
@@ -60,16 +67,26 @@ class DomainConfig extends AbstractConfig
 	public $logLevel = "record";
 	/**
 	 * map data from anonymous json data back to prop php objects (performance hog)
+	 *
 	 * @var bool
 	 */
 	public $mapData = false;
+	/**
+	 * @var Proxy
+	 */
+	private $proxy;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
 	/**
 	 * @return Proxy
 	 */
 	public function getProxy()
 	{
-		if(is_null($this->proxy)) {
-			switch($scheme = parse_url($this->server, PHP_URL_SCHEME)) {
+		if (is_null($this->proxy)) {
+			switch ($scheme = parse_url($this->server, PHP_URL_SCHEME)) {
 				case 'tcp':
 					$this->proxy = new Proxy($this);
 					break;
@@ -79,6 +96,11 @@ class DomainConfig extends AbstractConfig
 		}
 		return $this->proxy;
 	}
+
+	/**
+	 * @return array
+	 * @throws \Exception
+	 */
 	public function getServerSpawnCommandArray()
 	{
 		$urlParts = parse_url($this->server);
@@ -93,12 +115,21 @@ class DomainConfig extends AbstractConfig
 			$this->repo
 		);
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDaemonName()
+	{
+		$path = str_replace(DIRECTORY_SEPARATOR, '-', substr(dirname(dirname(\Foomo\ROOT)), 1));
+		return $path . '-' . \Foomo\Config::getMode() . '-' . $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getLogfile()
 	{
 		return Module::getLogDir() . DIRECTORY_SEPARATOR . 'content-server-' . $this->name;
-	}
-	public function getDaemonName()
-	{
-		return str_replace(DIRECTORY_SEPARATOR, '-', substr(dirname(dirname(\Foomo\ROOT)), 1)) . '-' . \Foomo\Config::getMode() . '-' . $this->name;
 	}
 }

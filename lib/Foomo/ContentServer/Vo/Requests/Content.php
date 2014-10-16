@@ -18,14 +18,23 @@
  */
 
 namespace Foomo\ContentServer\Vo\Requests;
+
 use Foomo\ContentServer\Vo\Requests\Content\Env;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class Content
 {
+	// --------------------------------------------------------------------------------------------
+	// ~ Variables
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @var Env
+	 */
+	public $env;
 	/**
 	 * @var string
 	 */
@@ -34,13 +43,47 @@ class Content
 	 * @var Content\Node[]
 	 */
 	public $nodes;
-	/**
-	 * @var Content\Env
-	 */
-	public $env;
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Constructor
+	// --------------------------------------------------------------------------------------------
 
 	/**
-	 * @param $URI
+	 * @param string $URI
+	 * @param Env    $env
+	 */
+	private function __construct($URI, Env $env)
+	{
+		$this->URI = $URI;
+		$this->env = $env;
+	}
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Public methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param string   $name
+	 * @param string   $id
+	 * @param string[] $mimeTypes
+	 * @param bool     $expand
+	 * @return Content
+	 */
+	public function addNode($name, $id, array $mimeTypes, $expand)
+	{
+		if (!is_array($this->nodes)) {
+			$this->nodes = array();
+		}
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
+		return $this;
+	}
+
+	// --------------------------------------------------------------------------------------------
+	// ~ Public static methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param     $URI
 	 * @param Env $env
 	 *
 	 * @return Content
@@ -48,26 +91,5 @@ class Content
 	public static function create($URI, Env $env)
 	{
 		return new self($URI, $env);
-	}
-	private function __construct($URI, $env)
-	{
-		$this->URI = $URI;
-		$this->env = $env;
-	}
-
-	/**
-	 * @param string $name
-	 * @param string $id
-	 * @param string[] array $mimeTypes
-	 * @param bool $expand
-	 * @return Content
-	 */
-	public function addNode($name, $id, array $mimeTypes, $expand)
-	{
-		if(!is_array($this->nodes)) {
-			$this->nodes = array();
-		}
-		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
-		return $this;
 	}
 }

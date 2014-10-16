@@ -18,35 +18,58 @@
  */
 
 namespace Foomo\ContentServer;
+
 use Foomo\CliCall;
 
 /**
- * @link www.foomo.org
+ * @link    www.foomo.org
  * @license www.gnu.org/licenses/lgpl.txt
  */
 class ServerManager
 {
-	public static function callGarden(DomainConfig $config, array $parameters)
-	{
-		$uri = '';
-		foreach($parameters as $parameter) {
-			$uri .= '/' . urlencode($parameter);
-		}
-		return file_get_contents($config->gardenDaemonAddress . $uri);
-	}
+	// --------------------------------------------------------------------------------------------
+	// ~ Public static methods
+	// --------------------------------------------------------------------------------------------
+
+	/**
+	 * @param DomainConfig $config
+	 */
 	public static function startServer(DomainConfig $config)
 	{
 		self::callGarden($config, $config->getServerSpawnCommandArray());
 	}
+
+	/**
+	 * @param DomainConfig $config
+	 * @param array        $parameters
+	 * @return string
+	 */
+	public static function callGarden(DomainConfig $config, array $parameters)
+	{
+		$uri = '';
+		foreach ($parameters as $parameter) {
+			$uri .= '/' . urlencode($parameter);
+		}
+		return file_get_contents($config->gardenDaemonAddress . $uri);
+	}
+
+	/**
+	 * @param DomainConfig $config
+	 */
 	public static function kill(DomainConfig $config)
 	{
 		self::callGarden($config, array('cmd', 'kill', $config->getDaemonName()));
 	}
+
+	/**
+	 * @param DomainConfig $config
+	 * @return bool
+	 */
 	public static function serverIsRunning(DomainConfig $config)
 	{
 		$daemonName = $config->getDaemonName();
-		foreach(json_decode($reply = self::callGarden($config, array('status'))) as $daemonStatus) {
-			if($daemonStatus->name == $daemonName && $daemonStatus->running == true) {
+		foreach (json_decode($reply = self::callGarden($config, array('status'))) as $daemonStatus) {
+			if ($daemonStatus->name == $daemonName && $daemonStatus->running == true) {
 				return true;
 			}
 		}
