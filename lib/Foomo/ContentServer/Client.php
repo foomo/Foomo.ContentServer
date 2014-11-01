@@ -91,7 +91,8 @@ class Client
 				header('HTTP/1.1 503 Service Unavailable');
 				header('Status: 503 Service Unavailable');
 				header('Retry-After: 15');
-				trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
+				throw new \Exception('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket), 503));
+				//trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
 			} else if ($connected === false) {
 				if (!$triedToStartServer) {
 					trigger_error(
