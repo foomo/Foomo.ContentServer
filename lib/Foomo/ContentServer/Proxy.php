@@ -115,7 +115,7 @@ class Proxy implements ProxyInterface
 	/**
 	 * you want it all, at once - then buckle up your memory
 	 *
-	 * @return Vo\Content\RepoNode
+	 * @return Vo\Content\RepoNode[]
 	 */
 	public function getRepo()
 	{
