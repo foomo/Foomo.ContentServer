@@ -40,5 +40,9 @@ class Item
 	/**
 	 * @var string
 	 */
+	public $mimeType;
+	/**
+	 * @var string
+	 */
 	public $URI;
 }
