@@ -95,6 +95,9 @@ class Client
 				//trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
 			} else if ($connected === false) {
 				if (!$triedToStartServer) {
+					if(empty($config->gardenDaemonAddress)) {
+						trigger_error('failed to connect socket to ' . $config->server . ' and there is no daemon garden - giving up', E_USER_ERROR);
+					}
 					trigger_error(
 						'failed to connect socket trying to start server: ' . socket_strerror(socket_last_error($this->socket)),
 						E_USER_WARNING
