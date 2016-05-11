@@ -38,10 +38,6 @@ class DomainConfig extends AbstractConfig
 	// --------------------------------------------------------------------------------------------
 
 	/**
-	 * @var string
-	 */
-	public $gardenDaemonAddress = 'http://127.0.0.1:8080';
-	/**
 	 * where to get my content from / where to spawn a server
 	 *
 	 * @var string
@@ -95,41 +91,5 @@ class DomainConfig extends AbstractConfig
 			}
 		}
 		return $this->proxy;
-	}
-
-	/**
-	 * @return array
-	 * @throws \Exception
-	 */
-	public function getServerSpawnCommandArray()
-	{
-		$urlParts = parse_url($this->server);
-		return array(
-			'cmd',
-			'spawn',
-			$this->getDaemonName(),
-			Module::getBaseDir('bin') . DIRECTORY_SEPARATOR . 'content-server-linux-amd64',
-			'-address=' . addslashes($urlParts['host'] . ':' . $urlParts['port']),
-			'-protocol=' . addslashes($urlParts['scheme']),
-			'-logLevel=' . addslashes($this->logLevel),
-			$this->repo
-		);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDaemonName()
-	{
-		$path = str_replace(DIRECTORY_SEPARATOR, '-', substr(dirname(dirname(\Foomo\ROOT)), 1));
-		return $path . '-' . \Foomo\Config::getMode() . '-' . $this->name;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getLogfile()
-	{
-		return Module::getLogDir() . DIRECTORY_SEPARATOR . 'content-server-' . $this->name;
 	}
 }

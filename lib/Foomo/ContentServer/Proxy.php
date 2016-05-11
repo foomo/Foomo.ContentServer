@@ -70,7 +70,7 @@ class Proxy implements ProxyInterface
 	public function getContent(Vo\Requests\Content $contentRequest)
 	{
 		return $this->mapResponse(
-			$this->client->call('content', $contentRequest)->reply,
+			$this->client->call('getContent', $contentRequest)->reply,
 			new SiteContent()
 		);
 	}

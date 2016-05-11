@@ -29,7 +29,7 @@ class Module extends \Foomo\Modules\ModuleBase
 	// ~ Constants
 	//---------------------------------------------------------------------------------------------
 
-	const VERSION = '0.3.1';
+	const VERSION = '1.3.0';
 	const NAME    = 'Foomo.ContentServer';
 
 	//---------------------------------------------------------------------------------------------
@@ -63,22 +63,5 @@ class Module extends \Foomo\Modules\ModuleBase
 		return array(
 			\Foomo\Modules\Resource\Module::getResource('Foomo.SimpleData', '0.3.*')
 		);
-	}
-
-	/**
-	 * @param \Foomo\Config\AbstractConfig $oldConfig
-	 * @param \Foomo\Config\AbstractConfig $newConfig
-	 * @param string                       $module
-	 * @param string                       $domain
-	 * @throws \Exception
-	 */
-	public static function hookPostConfigUpdate($oldConfig, $newConfig, $module, $domain)
-	{
-		if ($oldConfig && $oldConfig->getName() == 'Foomo.ContentServer.config') {
-			if (ServerManager::serverIsRunning($oldConfig)) {
-				ServerManager::kill($oldConfig);
-				ServerManager::startServer($newConfig);
-			}
-		}
 	}
 }

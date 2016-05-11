@@ -83,7 +83,6 @@ class Client
 			trigger_error('failed to create socket: ' . socket_strerror(socket_last_error()), E_USER_ERROR);
 		}
 		$connected = false;
-		$triedToStartServer = false;
 		$attempts = 0;
 		while ($connected === false) {
 			$connected = socket_connect($this->socket, $address, $urlParts['port']);
@@ -92,27 +91,8 @@ class Client
 				header('Status: 503 Service Unavailable');
 				header('Retry-After: 15');
 				throw new \Exception('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket), 503));
-				//trigger_error('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket)), E_USER_ERROR);
 			} else if ($connected === false) {
-				if (!$triedToStartServer) {
-					if(empty($config->gardenDaemonAddress)) {
-						trigger_error('failed to connect socket to ' . $config->server . ' and there is no daemon garden - giving up', E_USER_ERROR);
-					}
-					trigger_error(
-						'failed to connect socket trying to start server: ' . socket_strerror(socket_last_error($this->socket)),
-						E_USER_WARNING
-					);
-					$lockName = 'start-content-server-tcp_' . $config->getName();
-					if (Lock::lock($lockName, false)) {
-						// lets start that baby
-						ServerManager::startServer($config);
-						Lock::release($lockName);
-						$triedToStartServer = true;
-					} else {
-						// well sbdy else is trying this already
-						sleep(1);
-					}
-				}
+				throw new \Exception('failed to connect socket : ' . socket_strerror(socket_last_error($this->socket), 500));
 			}
 			$attempts++;
 		}
@@ -144,7 +124,7 @@ class Client
 	private function sendDebug($handler, $rawData)
 	{
 		Timer::start($topic = __METHOD__ . ' sending data to ' . $handler);
-		$sendBytes = $handler . ':' . strlen($rawData) . ':' . $rawData;
+		$sendBytes = $handler . ':' . strlen($rawData) . $rawData;
 		$bytesWritten = socket_write($this->socket, $sendBytes, strlen($sendBytes));
 		if ($bytesWritten != strlen($sendBytes)) {
 			trigger_error('failed to write my bytes', E_USER_ERROR);
@@ -202,7 +182,7 @@ class Client
 	 */
 	private function send($handler, $rawData)
 	{
-		$sendBytes = $handler . ':' . strlen($rawData) . ':' . $rawData;
+		$sendBytes = $handler . ':' . strlen($rawData) . $rawData;
 		$bytesWritten = socket_write($this->socket, $sendBytes, strlen($sendBytes));
 		if ($bytesWritten != strlen($sendBytes)) {
 			trigger_error('failed to write my bytes', E_USER_ERROR);
