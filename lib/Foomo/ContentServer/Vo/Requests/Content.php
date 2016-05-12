@@ -70,7 +70,7 @@ class Content
 	 * @param string[] $dataFields
 	 * @return Content
 	 */
-	public function addNode($name, $id, array $mimeTypes, $expand, $dataFields)
+	public function addNode($name, $id, array $mimeTypes, $expand, array $dataFields = [])
 	{
 		if (!is_array($this->nodes)) {
 			$this->nodes = array();

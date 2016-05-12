@@ -56,7 +56,7 @@ class Node
 	 * @param bool     $expand
 	 * @param string[] $dataFields
 	 */
-	public function __construct($id, array $mimeTypes, $expand, array $dataFields = array())
+	public function __construct($id, array $mimeTypes, $expand, array $dataFields = [])
 	{
 		$this->id = $id;
 		$this->expand = $expand;
