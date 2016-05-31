@@ -34,6 +34,10 @@ class Node
 	 */
 	public $id;
 	/**
+	 * @var string
+	 */
+	public $dimension;
+	/**
 	 * @var string[]
 	 */
 	public $mimeTypes;
@@ -55,10 +59,12 @@ class Node
 	 * @param string[] $mimeTypes
 	 * @param bool     $expand
 	 * @param string[] $dataFields
+	 * @param string   $dimension
 	 */
-	public function __construct($id, array $mimeTypes, $expand, array $dataFields = [])
+	public function __construct($id, array $mimeTypes, $expand, array $dataFields = [], $dimension = "")
 	{
 		$this->id = $id;
+		$this->dimension = $dimension;
 		$this->expand = $expand;
 		$this->mimeTypes = $mimeTypes;
 		$this->dataFields = $dataFields;
