@@ -45,4 +45,8 @@ class Item
 	 * @var string
 	 */
 	public $URI;
+	/**
+	 * @var array
+	 */
+	public $data;
 }
