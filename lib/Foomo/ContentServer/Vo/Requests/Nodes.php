@@ -61,11 +61,14 @@ class Nodes
 	 * @param string   $id
 	 * @param string[] array $mimeTypes
 	 * @param bool     $expand
+	 * @param string[] array $dataFields
+	 * @param string   $dimension
+	 *
 	 * @return Content
 	 */
-	public function addNode($name, $id, array $mimeTypes, $expand)
+	public function addNode($name, $id, array $mimeTypes, $expand, array $dataFields, $dimension = "")
 	{
-		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand);
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand, $dataFields, $dimension);
 		return $this;
 	}
 
