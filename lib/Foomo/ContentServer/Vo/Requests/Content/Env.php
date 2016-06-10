@@ -39,10 +39,7 @@ class Env
 	 * @var string[]
 	 */
 	public $groups;
-	/**
-	 * @var array
-	 */
-	public $data;
+
 
 	// --------------------------------------------------------------------------------------------
 	// ~ Public static methods
@@ -51,15 +48,13 @@ class Env
 	/**
 	 * @param string[] $dimensions
 	 * @param string[] $groups
-	 * @param array    $data
 	 * @return Env
 	 */
-	public static function create(array $dimensions, array $groups = array(), array $data = array())
+	public static function create(array $dimensions, array $groups = array())
 	{
 		$env = new self();
 		$env->groups = $groups;
 		$env->dimensions = $dimensions;
-		$env->data = $data;
 		return $env;
 	}
 }
