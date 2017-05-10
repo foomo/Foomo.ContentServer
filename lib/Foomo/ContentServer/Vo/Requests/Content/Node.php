@@ -40,6 +40,10 @@ class Node
 	/**
 	 * @var string[]
 	 */
+	public $groups;
+	/**
+	 * @var string[]
+	 */
 	public $mimeTypes;
 	/**
 	 * @var string[]
@@ -61,12 +65,13 @@ class Node
 	 * @param string[] $dataFields
 	 * @param string   $dimension
 	 */
-	public function __construct($id, array $mimeTypes, $expand, array $dataFields = [], $dimension = "")
+	public function __construct($id, array $mimeTypes, $expand, array $dataFields = [], $dimension = "", $groups = [])
 	{
 		$this->id = $id;
 		$this->dimension = $dimension;
 		$this->expand = $expand;
 		$this->mimeTypes = $mimeTypes;
 		$this->dataFields = $dataFields;
+		$this->groups = $groups;
 	}
 }

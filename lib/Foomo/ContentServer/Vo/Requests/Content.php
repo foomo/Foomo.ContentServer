@@ -71,12 +71,12 @@ class Content
 	 * @param string $dimension
 	 * @return Content
 	 */
-	public function addNode($name, $id, array $mimeTypes, $expand, array $dataFields = [], $dimension = "")
+	public function addNode($name, $id, array $mimeTypes, $expand, array $dataFields = [], $dimension = "", $groups = [])
 	{
 		if (!is_array($this->nodes)) {
 			$this->nodes = array();
 		}
-		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand, $dataFields, $dimension);
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand, $dataFields, $dimension, $groups);
 		return $this;
 	}
 

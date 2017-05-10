@@ -66,9 +66,9 @@ class Nodes
 	 *
 	 * @return Content
 	 */
-	public function addNode($name, $id, array $mimeTypes, $expand, array $dataFields, $dimension = "")
+	public function addNode($name, $id, array $mimeTypes, $expand, array $dataFields, $dimension = "", $groups = [])
 	{
-		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand, $dataFields, $dimension);
+		$this->nodes[$name] = new Content\Node($id, $mimeTypes, $expand, $dataFields, $dimension, $groups);
 		return $this;
 	}
 
