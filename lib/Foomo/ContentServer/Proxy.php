@@ -83,19 +83,24 @@ class Proxy implements ProxyInterface
 	 */
 	protected function mapResponse($response, $voClass)
 	{
-		// $response = (array) $response;
-		if (count($response) == 2 && sort(array_keys($response)) == array('code', 'message')) {
+		if(is_object($response) && !empty($response->error) && !empty($response->message)) {
+			throw new \Exception($response->message, $response->code);
+		} else if(is_array($response) && count($response) == 2 && sort(array_keys($response)) == array('code', 'message')) {
 			throw new \Exception($response['message'], $response['code']);
-		} else {
-			if ($this->mapData) {
-				Timer::start(__METHOD__);
-				$mapped = VoMapper::map($response, new $voClass);
-				Timer::stop(__METHOD__);
-				return $mapped;
-			} else {
-				return $response;
-			}
+		} else if(!is_array($response) && !is_object($response)) {
+			throw new \Exception("you reponse sucks");
 		}
+
+
+		if ($this->mapData) {
+			Timer::start(__METHOD__);
+			$mapped = VoMapper::map($response, new $voClass);
+			Timer::stop(__METHOD__);
+			return $mapped;
+		} else {
+			return $response;
+		}
+		
 	}
 
 	/**
